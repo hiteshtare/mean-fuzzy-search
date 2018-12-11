@@ -1,0 +1,28 @@
+<div class="content-section introduction">
+  <div>
+    <span class="feature-title">Fuzzy Search Demo</span>
+  </div>
+  <div>
+    <span class="feature-title"><input type="text" pInputText [(ngModel)]="txtSearch" (ngModelChange)="onTxtSearchChange($event)" /></span>
+  </div>
+</div>
+
+<p-table [value]="results">
+  <ng-template pTemplate="caption">
+    Results
+  </ng-template>
+  <ng-template pTemplate="header">
+    <tr>
+      <th>Choice</th>
+      <th>Score</th>
+      <th>Index</th>
+    </tr>
+  </ng-template>
+  <ng-template pTemplate="body" let-result>
+    <tr>
+      <td>{{result[0]}}</td>
+      <td>{{result[1]}}</td>
+      <td>{{result[2]}}</td>
+    </tr>
+  </ng-template>
+</p-table>
