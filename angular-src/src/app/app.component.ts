@@ -11,6 +11,8 @@ export class AppComponent {
   results;
   txtSearch;
 
+  selectedPhoneticValue: string[] = ['fuzzball']; // ['ratio']
+
   constructor(private fuzzyApiService: FuzzyApiService) {
     this.fuzzyApiService.fuzzyApiUrl = environment.apiUrl;
   }
@@ -33,8 +35,11 @@ export class AppComponent {
   }
 
   loadCustomResults(searchStr: string) {
+    const value = this.selectedPhoneticValue[0] === '' ? 'fuzzball' : this.selectedPhoneticValue;
+
     const options = {
-      'searchStr': searchStr
+      'searchStr': searchStr,
+      'phoneticName': value
     };
 
     this.fuzzyApiService.getCustomResults(options).subscribe((data) => {

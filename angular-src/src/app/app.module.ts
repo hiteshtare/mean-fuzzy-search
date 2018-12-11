@@ -11,8 +11,11 @@ import { AppComponent } from './app.component';
 import { TableModule } from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
-import { FuzzyApiService } from './shared/services/fuzzy-api.service';
+import { CheckboxModule } from 'primeng/checkbox';
+import { RadioButtonModule } from 'primeng/radiobutton';
 // PrimeNG Modules
+
+import { FuzzyApiService } from './shared/services/fuzzy-api.service';
 
 
 @NgModule({
@@ -27,7 +30,9 @@ import { FuzzyApiService } from './shared/services/fuzzy-api.service';
     FormsModule,
     TableModule,
     ButtonModule,
-    InputTextModule
+    InputTextModule,
+    CheckboxModule,
+    RadioButtonModule
   ],
   providers: [FuzzyApiService],
   bootstrap: [AppComponent]
