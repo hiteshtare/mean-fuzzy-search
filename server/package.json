@@ -1,0 +1,12 @@
+{
+  "name": "fuzzysearch-demo",
+  "version": "1.0.0",
+  "description": "Fuzzy Search implementation",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo 'Node Fuzzy Search app'",
+    "start": "node app.js"
+  },
+  "author": "Hitesh Tare",
+  "license": "ISC"
+}
