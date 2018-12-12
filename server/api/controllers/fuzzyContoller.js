@@ -6,6 +6,12 @@ const doubleMetaphone = require('talisman/phonetics/double-metaphone');
 const soundex = require('soundex');
 const fuse = require('fuse.js');
 
+//const Thinker = require('thinker-fts');
+
+const natural = require('natural');
+const symlar = require('symlar')
+
+
 const _ = require("lodash");
 
 const choices = ["Break", "Brake", "Hear", "Here", "Tree", "Free", "Dylan", "Dillon", "Britney", "Britnee", "Crystal", "Cristall", "Jim", "Bill", "John", "Johnny", "Johnson", "Honson", "Kaun", "Corn", "Korn", "Bruce", "Kruze", "Catherine ", "Kathryn", "Zero", "Zee ro", "One", "Wun", "Two", "Too", "Three", "Tree", "Four", "Fou er", "Five", "Fife", "Six", "Six", "Seven", "Sev en", "Eight", "Ate", "Nine", "Crying", "Alfa", "Alpha", "Bravo", "Bra voh", "Charlie", "Char Lee", "Delta", "Del Tah", "Echo", "Eck Ho", "India", "In Dee Ah", "Juliet", "Jew Lee Ett", "Lima ", "Lee Mah", "Papa", "Pah Pah", "Romeo", "Row Me Oh", "Seirra", "See Air Rah", "Victor", "Vik Tah", "Whiskey ", "Wiss key", "Yankee", "Yang Key", "Zulu", "Zoo Loo"];
@@ -197,6 +203,9 @@ exports.fuzzy_custom = async (req, res, next) => {
     const searchStr = req.body.searchStr;
     const phoneticName = req.body.phoneticName;
 
+    // console.log(`SYMLAR`);
+    // console.log(symlar.phonesim('Break', 'Brake'));
+
     ///////////////////////////Daitch Mokotoff///////////////////////////
     if (phoneticName === 'daitchmokotoff') {
       let result = [];
@@ -319,19 +328,52 @@ exports.fuzzy_custom = async (req, res, next) => {
         payload: curated_result
       });
       ///////////////////////////FUSE///////////////////////////
+    } else if (phoneticName === 'natural') {
+      ///////////////////////////NATURAL///////////////////////////
+      var metaphone = natural.Metaphone;
+
+      let result = [];
+
+      //Iterate over Array of choices
+      choices.forEach((choice, index) => {
+        let i = index;
+        let score = metaphone.process(choice);
+        result.push({
+          'choice': choice,
+          'index': i,
+          'score': score
+        });
+      });
+
+      result = _.orderBy(result, 'score', ['desc']);
+
+      let score = metaphone.process(searchStr);
+      result.unshift({
+        'choice': searchStr,
+        'index': 0,
+        'score': score
+      });
+
+      res.status(200).json({
+        success: true,
+        message: `Fuzzy custom invoked successfully for ${phoneticName}`,
+        payload: result
+      });
+      ///////////////////////////NATURAL///////////////////////////
     } else {
       ///////////////////////////Fuzzball  Partial_Ratio///////////////////////////
       options = {
         scorer: fuzzball.partial_ratio,
+        processor: example => example.name
       };
 
-      fuzzball.extractAsPromised(searchStr, choices, options).then(result => {
+      fuzzball.extractAsPromised(searchStr, examples, options).then(result => {
         let curated_result = [];
         result.forEach((item, index) => {
           curated_result.push({
-            'choice': item[0],
-            'i': index,
-            'score': item[2]
+            'choice': item[0]["name"],
+            'i': item[2],
+            'score': item[1]
           });
         });
         res.status(200).json({
@@ -363,4 +405,31 @@ function closest(num, arr) {
     }
   }
   return curr;
+}
+
+
+function thinkerImplementation() {
+  var
+    thinker = Thinker(),
+    ranker = Thinker.rankers.standard(),
+    thinker_soundex = Thinker.processors.soundex();
+
+  thinker.addWordProcessor(thinker_soundex);
+  thinker.ranker = ranker;
+
+  let tempArr = [];
+  examples.forEach((example, index) => {
+    tempArr[index] = {
+      id: index,
+      fields: example
+    };
+  });
+
+  thinker.feed(tempArr);
+
+  // Search for text
+  var result = thinker.find('India');
+
+  // Show result
+  console.log(result);
 }

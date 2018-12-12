@@ -9,7 +9,7 @@ import { environment } from 'src/environments/environment';
 })
 export class AppComponent {
   results;
-  txtSearch;
+  txtSearch = '';
 
   selectedPhoneticValue: string[] = ['fuzzball']; // ['ratio']
 
