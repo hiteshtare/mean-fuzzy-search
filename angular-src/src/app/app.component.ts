@@ -20,11 +20,11 @@ export class AppComponent {
   // tslint:disable-next-line:use-life-cycle-interface
   ngOnInit() {
     // this.loadDefaultResults();
-    this.loadCustomResults('');
+    this.loadCustomResults();
   }
 
   onTxtSearchChange(value) {
-    this.loadCustomResults(value);
+    this.loadCustomResults();
   }
 
 
@@ -34,11 +34,11 @@ export class AppComponent {
     });
   }
 
-  loadCustomResults(searchStr: string) {
+  loadCustomResults() {
     const value = this.selectedPhoneticValue[0] === '' ? 'fuzzball' : this.selectedPhoneticValue;
 
     const options = {
-      'searchStr': searchStr,
+      'searchStr': this.txtSearch,
       'phoneticName': value
     };
 

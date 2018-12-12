@@ -11,11 +11,24 @@
     <div class="ui-g" style="width:700px;margin-bottom:10px">
 
       <div class="ui-g-3">
-        <p-radioButton name="rdPhonetics" value="fuzzball" label="FuzzBall" [(ngModel)]="selectedPhoneticValue" inputId="fuzzball"></p-radioButton>
+        <p-radioButton name="rdPhonetics" value="fuzzball" label="FuzzBall" [(ngModel)]="selectedPhoneticValue"
+          (ngModelChange)="onTxtSearchChange($event)" inputId="fuzzball"></p-radioButton>
+      </div>
+      <div class="ui-g-3">
+        <p-radioButton name="rdPhonetics" value="fuse" label="Fuse" [(ngModel)]="selectedPhoneticValue" (ngModelChange)="onTxtSearchChange($event)"
+          inputId="fuse"></p-radioButton>
+      </div>
+      <div class="ui-g-3">
+        <p-radioButton name="rdPhonetics" value="soundex" label="Soundex" [(ngModel)]="selectedPhoneticValue"
+          (ngModelChange)="onTxtSearchChange($event)" inputId="soundex"></p-radioButton>
       </div>
       <div class="ui-g-3">
         <p-radioButton name="rdPhonetics" value="daitchmokotoff" label="Daitch Mokotoff" [(ngModel)]="selectedPhoneticValue"
-          inputId="daitchmokotoff"></p-radioButton>
+          (ngModelChange)="onTxtSearchChange($event)" inputId="daitchmokotoff"></p-radioButton>
+      </div>
+      <div class="ui-g-3">
+        <p-radioButton name="rdPhonetics" value="doublemetaphone" label="Double Metaphone" [(ngModel)]="selectedPhoneticValue"
+          (ngModelChange)="onTxtSearchChange($event)" inputId="doublemetaphone"></p-radioButton>
       </div>
       <!-- <div class="ui-g-3">
   <p-radioButton name="chkgrpFuzzBall" value="ratio" label="Ratio" [(ngModel)]="selectedFuzzBallValue" inputId="ratio"></p-radioButton>
