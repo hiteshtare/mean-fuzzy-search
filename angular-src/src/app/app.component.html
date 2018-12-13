@@ -3,8 +3,17 @@
     <span class="feature-title">Fuzzy Search Demo</span>
   </div>
   <div>
-    <span class="feature-title"><input type="text" placeholder="Search Text" pInputText [(ngModel)]="txtSearch"
-        (ngModelChange)="onTxtSearchChange($event)" /></span>
+    <span class="feature-title">
+      <div class="ui-g" style="margin-bottom:2px">
+        <div class="ui-g-3">
+          <input type="text" placeholder="Search Text" pInputText [(ngModel)]="txtSearch" (ngModelChange)="onTxtSearchChange($event)" />
+        </div>
+        <div class="ui-g-9">
+          <textarea placeholder="Enter Valid JSON" [(ngModel)]='txtAreaJSON' rows="5" cols="100">
+</textarea>
+        </div>
+      </div>
+    </span>
   </div>
   <div>
     <h3>Choose Search Algorithm :</h3>
@@ -33,6 +42,10 @@
       <div class="ui-g-3">
         <p-radioButton name="rdPhonetics" value="natural" label="Natural" [(ngModel)]="selectedPhoneticValue"
           (ngModelChange)="onTxtSearchChange($event)" inputId="natural"></p-radioButton>
+      </div>
+      <div class="ui-g-3">
+        <p-radioButton name="rdPhonetics" value="symlar" label="Symlar" [(ngModel)]="selectedPhoneticValue"
+          (ngModelChange)="onTxtSearchChange($event)" inputId="symlar"></p-radioButton>
       </div>
       <!-- <div class="ui-g-3">
   <p-radioButton name="chkgrpFuzzBall" value="ratio" label="Ratio" [(ngModel)]="selectedFuzzBallValue" inputId="ratio"></p-radioButton>

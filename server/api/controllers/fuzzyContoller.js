@@ -5,16 +5,15 @@ const daitchMokotoff = require('talisman/phonetics/daitch-mokotoff');
 const doubleMetaphone = require('talisman/phonetics/double-metaphone');
 const soundex = require('soundex');
 const fuse = require('fuse.js');
-
-//const Thinker = require('thinker-fts');
-
 const natural = require('natural');
 const symlar = require('symlar')
 
+//const Thinker = require('thinker-fts');
 
 const _ = require("lodash");
+var path = require('path');
 
-const examples = require('./subjects.json');
+const examples = require('./example.json');
 
 exports.fuzzy_default = async (req, res, next) => {
   try {
@@ -215,6 +214,31 @@ exports.fuzzy_custom = async (req, res, next) => {
         payload: result
       });
       ///////////////////////////NATURAL///////////////////////////
+    } else if (phoneticName === 'symlar') {
+      ///////////////////////////SYMLAR///////////////////////////
+      let result = [];
+
+      //Iterate over Array of examples
+      if (searchStr) {
+        examples.forEach((example, index) => {
+          let i = index;
+          let score = symlar.phonesim(searchStr, example['name']);
+          result.push({
+            'choice': example['name'],
+            'index': i,
+            'score': score
+          });
+        });
+
+        result = _.orderBy(result, 'score', ['desc']);
+      }
+
+      res.status(200).json({
+        success: true,
+        message: `Fuzzy custom invoked successfully for ${phoneticName}`,
+        payload: result
+      });
+      ///////////////////////////SYMLAR///////////////////////////
     } else {
       ///////////////////////////Fuzzball  Partial_Ratio///////////////////////////
       options = {

@@ -10,6 +10,7 @@ import { environment } from 'src/environments/environment';
 export class AppComponent {
   results;
   txtSearch = '';
+  txtAreaJSON = '';
 
   selectedPhoneticValue: string[] = ['fuzzball']; // ['ratio']
 
@@ -27,6 +28,17 @@ export class AppComponent {
     this.loadCustomResults();
   }
 
+  get rapidPageValue() {
+    return JSON.stringify(this.txtAreaJSON, null, 2);
+  }
+
+  set rapidPageValue(v) {
+    try {
+      this.txtAreaJSON = JSON.parse(v);
+    } catch (e) {
+      console.log('error occored while you were typing the JSON');
+    }
+  }
 
   loadDefaultResults() {
     this.fuzzyApiService.getDefaultResults().subscribe((data) => {
