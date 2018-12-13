@@ -40,8 +40,12 @@
           (ngModelChange)="onTxtSearchChange($event)" inputId="doublemetaphone"></p-radioButton>
       </div>
       <div class="ui-g-3">
-        <p-radioButton name="rdPhonetics" value="natural" label="Natural" [(ngModel)]="selectedPhoneticValue"
-          (ngModelChange)="onTxtSearchChange($event)" inputId="natural"></p-radioButton>
+        <p-radioButton name="rdPhonetics" value="naturalmetaphone" label="Natural Metaphone" [(ngModel)]="selectedPhoneticValue"
+          (ngModelChange)="onTxtSearchChange($event)" inputId="naturalmetaphone"></p-radioButton>
+      </div>
+      <div class="ui-g-3">
+        <p-radioButton name="rdPhonetics" value="naturalsoundex" label="Natural Soundex" [(ngModel)]="selectedPhoneticValue"
+          (ngModelChange)="onTxtSearchChange($event)" inputId="naturalsoundex"></p-radioButton>
       </div>
       <div class="ui-g-3">
         <p-radioButton name="rdPhonetics" value="symlar" label="Symlar" [(ngModel)]="selectedPhoneticValue"

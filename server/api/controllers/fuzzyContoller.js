@@ -49,7 +49,7 @@ exports.fuzzy_custom = async (req, res, next) => {
     const searchStr = req.body.searchStr;
     const phoneticName = req.body.phoneticName;
 
-    // console.log(`SYMLAR`);
+    console.log(`PHONETIC selected : ${phoneticName}`);
     // console.log(symlar.phonesim('Break', 'Brake'));
 
     ///////////////////////////Daitch Mokotoff///////////////////////////
@@ -180,8 +180,8 @@ exports.fuzzy_custom = async (req, res, next) => {
         payload: curated_result
       });
       ///////////////////////////FUSE///////////////////////////
-    } else if (phoneticName === 'natural') {
-      ///////////////////////////NATURAL///////////////////////////
+    } else if (phoneticName === 'naturalmetaphone') {
+      ///////////////////////////NATURAL METAPHONE///////////////////////////
       var metaphone = natural.Metaphone;
 
       let result = [];
@@ -213,7 +213,41 @@ exports.fuzzy_custom = async (req, res, next) => {
         message: `Fuzzy custom invoked successfully for ${phoneticName}`,
         payload: result
       });
-      ///////////////////////////NATURAL///////////////////////////
+      ///////////////////////////NATURAL METAPHONE///////////////////////////
+    } else if (phoneticName === 'naturalsoundex') {
+      ///////////////////////////NATURAL SOUNDEX///////////////////////////
+      var metaphone = natural.SoundEx;
+
+      let result = [];
+
+      //Iterate over Array of examples
+      examples.forEach((example, index) => {
+        let i = index;
+        let score = metaphone.process(example['name']);
+        result.push({
+          'choice': example['name'],
+          'index': i,
+          'score': score
+        });
+      });
+
+      result = _.orderBy(result, 'score', ['desc']);
+
+      if (searchStr) {
+        let score = metaphone.process(searchStr);
+        result.unshift({
+          'choice': searchStr,
+          'index': 0,
+          'score': score
+        });
+      }
+
+      res.status(200).json({
+        success: true,
+        message: `Fuzzy custom invoked successfully for ${phoneticName}`,
+        payload: result
+      });
+      ///////////////////////////NATURAL SOUNDEX///////////////////////////
     } else if (phoneticName === 'symlar') {
       ///////////////////////////SYMLAR///////////////////////////
       let result = [];
