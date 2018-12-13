@@ -28,8 +28,7 @@
     "talisman": "^0.21.0"
   },
   "engines": {
-    "node": "8.10.0",
-    "npm": "3.5.2"
+    "node": "8.10.0"
   },
   "devDependencies": {
     "body-parser": "^1.18.3",
