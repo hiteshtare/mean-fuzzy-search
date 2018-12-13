@@ -12,7 +12,21 @@
   },
   "author": "Hitesh Tare",
   "license": "ISC",
-  "dependencies": {},
+  "dependencies": {
+    "body-parser": "^1.18.3",
+    "express": "^4.16.4",
+    "lodash": "^4.17.11",
+    "mongoose": "^5.3.12",
+    "morgan": "^1.9.1",
+    "fuse.js": "^3.3.0",
+    "fuzzball": "^1.1.6",
+    "natural": "^0.6.2",
+    "request": "^2.88.0",
+    "request-promise": "^4.2.2",
+    "soundex": "^0.2.1",
+    "symlar": "^1.1.6",
+    "talisman": "^0.21.0"
+  },
   "engines": {
     "node": "8.12.0"
   },
