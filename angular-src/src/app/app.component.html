@@ -19,61 +19,50 @@
     <h3>Choose Phonetic Algorithm :</h3>
     <div class="ui-g" style="width:700px;margin-bottom:10px">
 
-      <div class="ui-g-3">
-        <p-radioButton name="rdPhonetics" value="fuzzball" label="FuzzBall" [(ngModel)]="selectedPhoneticValue"
+      <div class="ui-g-4">
+        <p-radioButton name="rdPhonetics" value="fuzzball" label="FuzzBall - Partial Ratio" [(ngModel)]="selectedPhoneticValue"
           (ngModelChange)="onTxtSearchChange($event)" inputId="fuzzball"></p-radioButton>
       </div>
-      <div class="ui-g-3">
-        <p-radioButton name="rdPhonetics" value="fuse" label="Fuse" [(ngModel)]="selectedPhoneticValue" (ngModelChange)="onTxtSearchChange($event)"
-          inputId="fuse"></p-radioButton>
-      </div>
-      <div class="ui-g-3">
+      <div class="ui-g-4">
         <p-radioButton name="rdPhonetics" value="daitchmokotoff" label="Daitch Mokotoff" [(ngModel)]="selectedPhoneticValue"
           (ngModelChange)="onTxtSearchChange($event)" inputId="daitchmokotoff"></p-radioButton>
       </div>
-      <div class="ui-g-3">
+      <div class="ui-g-4">
         <p-radioButton name="rdPhonetics" value="soundex" label="Soundex" [(ngModel)]="selectedPhoneticValue"
           (ngModelChange)="onTxtSearchChange($event)" inputId="soundex"></p-radioButton>
       </div>
-      <div class="ui-g-3">
+      <div class="ui-g-4">
         <p-radioButton name="rdPhonetics" value="doublemetaphone" label="Double Metaphone" [(ngModel)]="selectedPhoneticValue"
           (ngModelChange)="onTxtSearchChange($event)" inputId="doublemetaphone"></p-radioButton>
       </div>
-      <div class="ui-g-3">
+      <div class="ui-g-4">
         <p-radioButton name="rdPhonetics" value="naturalmetaphone" label="Natural Metaphone" [(ngModel)]="selectedPhoneticValue"
           (ngModelChange)="onTxtSearchChange($event)" inputId="naturalmetaphone"></p-radioButton>
       </div>
-      <div class="ui-g-3">
+      <div class="ui-g-4">
         <p-radioButton name="rdPhonetics" value="naturalsoundex" label="Natural Soundex" [(ngModel)]="selectedPhoneticValue"
           (ngModelChange)="onTxtSearchChange($event)" inputId="naturalsoundex"></p-radioButton>
       </div>
-      <div class="ui-g-3">
+      <div class="ui-g-4">
         <p-radioButton name="rdPhonetics" value="symlar" label="Symlar" [(ngModel)]="selectedPhoneticValue"
           (ngModelChange)="onTxtSearchChange($event)" inputId="symlar"></p-radioButton>
       </div>
-      <!-- <div class="ui-g-3">
-  <p-radioButton name="chkgrpFuzzBall" value="ratio" label="Ratio" [(ngModel)]="selectedFuzzBallValue" inputId="ratio"></p-radioButton>
-</div>
-<div class="ui-g-3">
-  <p-radioButton name="chkgrpFuzzBall" value="partial_ratio" label="Partial Ratio" [(ngModel)]="selectedFuzzBallValue"
-    inputId="partial_ratio"></p-radioButton>
-</div>
-<div class="ui-g-3">
-  <p-radioButton name="chkgrpFuzzBall" value="token_sort_ratio" label="Token Sort Ratio" [(ngModel)]="selectedFuzzBallValue"
-    inputId="token_sort_ratio"></p-radioButton>
-</div>
-<div class="ui-g-3">
-  <p-radioButton name="chkgrpFuzzBall" value="token_set_ratio" label="Token Set Ratio" [(ngModel)]="selectedFuzzBallValue"
-    inputId="token_set_ratio"></p-radioButton>
-</div> -->
     </div>
   </div>
   <div>
-    <h3>Choose Distance Algorithm :</h3>
+    <h3>Choose Distance/Metrics Algorithm :</h3>
     <div class="ui-g" style="width:700px;margin-bottom:10px">
-      <div class="ui-g-3">
-        <p-radioButton name="rdPhonetics" value="levenshtein" label="Levenshtein" [(ngModel)]="selectedPhoneticValue"
+      <div class="ui-g-4">
+        <p-radioButton name="rdPhonetics" value="levenshtein" label="FuzzBall - Levenshtein" [(ngModel)]="selectedPhoneticValue"
           (ngModelChange)="onTxtSearchChange($event)" inputId="levenshtein"></p-radioButton>
+      </div>
+      <div class="ui-g-4">
+        <p-radioButton name="rdPhonetics" value="jarowinkler" label="Jaro Winkler" [(ngModel)]="selectedPhoneticValue"
+          (ngModelChange)="onTxtSearchChange($event)" inputId="jarowinkler"></p-radioButton>
+      </div>
+      <div class="ui-g-4">
+        <p-radioButton name="rdPhonetics" value="fuse" label="Fuse" [(ngModel)]="selectedPhoneticValue" (ngModelChange)="onTxtSearchChange($event)"
+          inputId="fuse"></p-radioButton>
       </div>
     </div>
   </div>

@@ -1,12 +1,14 @@
 const request = require("request-promise");
-const fuzzball = require('fuzzball');
 
 const daitchMokotoff = require('talisman/phonetics/daitch-mokotoff');
 const doubleMetaphone = require('talisman/phonetics/double-metaphone');
 const soundex = require('soundex');
-const fuse = require('fuse.js');
 const natural = require('natural');
 const symlar = require('symlar')
+
+const fuzzball = require('fuzzball');
+const fuse = require('fuse.js');
+var jaroWinkler = require('jaro-winkler');
 
 //const Thinker = require('thinker-fts');
 
@@ -16,25 +18,25 @@ var path = require('path');
 const examples = require('./example.json');
 
 // console.log(`fuzzball.distance("Here", "Hear ")`);
-// console.log(fuzzball.distance("Here", "Hear "));
-// console.log(`fuzzball.distance("fuzzbally was a bear", "fozzy was a bear")`);
-// console.log(fuzzball.distance("fuzzbally was a bear", "fozzy was a bear"));
-// console.log(`fuzzball.distance("John", "John")`);
-// console.log(fuzzball.distance("John", "John"));
-// console.log(`fuzzball.distance("John", "Johny")`);
-// console.log(fuzzball.distance("John", "Johny"));
-// console.log(`fuzzball.distance("John", "Jonny")`);
-// console.log(fuzzball.distance("John", "Jonny"));
-// console.log(`fuzzball.distance("John", "Johnson")`);
-// console.log(fuzzball.distance("John", "Johnson"));
-// console.log(`fuzzball.distance("John", "Joe")`);
-// console.log(fuzzball.distance("John", "Joe"));
-// console.log(`fuzzball.distance("Joe", "Joy")`);
-// console.log(fuzzball.distance("Joe", "Joy"));
-// console.log(`fuzzball.distance("Joe", "Joe")`);
-// console.log(fuzzball.distance("Joe", "Joe"));
-// console.log(`fuzzball.distance("Joe", "Jo")`);
-// console.log(fuzzball.distance("Joe", "Jo"));
+// console.log(jaroWinkler("Here", "Hear "));
+// console.log(`jaroWinkler("fuzzbally was a bear", "fozzy was a bear")`);
+// console.log(jaroWinkler("fuzzbally was a bear", "fozzy was a bear"));
+// console.log(`jaroWinkler("John", "John")`);
+// console.log(jaroWinkler("John", "John"));
+// console.log(`jaroWinkler("John", "Johny")`);
+// console.log(jaroWinkler("John", "Johny"));
+// console.log(`jaroWinkler("John", "Jonny")`);
+// console.log(jaroWinkler("John", "Jonny"));
+// console.log(`jaroWinkler("John", "Johnson")`);
+// console.log(jaroWinkler("John", "Johnson"));
+// console.log(`jaroWinkler("John", "Joe")`);
+// console.log(jaroWinkler("John", "Joe"));
+// console.log(`jaroWinkler("Joe", "Joy")`);
+// console.log(jaroWinkler("Joe", "Joy"));
+// console.log(`jaroWinkler("Joe", "Joe")`);
+// console.log(jaroWinkler("Joe", "Joe"));
+// console.log(`jaroWinkler("Joe", "Jo")`);
+// console.log(jaroWinkler("Joe", "Jo"));
 
 exports.fuzzy_default = async (req, res, next) => {
   try {
@@ -169,38 +171,6 @@ exports.fuzzy_custom = async (req, res, next) => {
         payload: result
       });
       ///////////////////////////SOUNDEX///////////////////////////
-    } else if (name === 'fuse') {
-      ///////////////////////////FUSE///////////////////////////
-      let result = [];
-
-      var options = {
-        shouldSort: true,
-        includeScore: true,
-        //threshold: 0.6,
-        keys: [
-          "name"
-        ]
-      };
-
-      var fuseMe = new fuse(examples, options);
-
-      result = fuseMe.search(searchStr);
-      let curated_result = [];
-      result.forEach((item, index) => {
-
-        curated_result.push({
-          'choice': item["item"]["name"],
-          'i': index,
-          'score': item["score"]
-        });
-      });
-
-      res.status(200).json({
-        success: true,
-        message: `Fuzzy custom invoked successfully for ${name}`,
-        payload: curated_result
-      });
-      ///////////////////////////FUSE///////////////////////////
     } else if (name === 'naturalmetaphone') {
       ///////////////////////////NATURAL METAPHONE///////////////////////////
       var metaphone = natural.Metaphone;
@@ -317,10 +287,68 @@ exports.fuzzy_custom = async (req, res, next) => {
         });
       });
       ///////////////////////////Fuzzball  Partial_Ratio///////////////////////////
-    } // end of if
+    }
     /**************************** PHONETIC ************************************/
     //+++++++++++++++++++++++++++ DISTANCE ++++++++++++++++++++++++++++++++++++/
-    else {
+    else if (name === 'fuse') {
+      ///////////////////////////FUSE///////////////////////////
+      let result = [];
+
+      var options = {
+        shouldSort: true,
+        includeScore: true,
+        //threshold: 0.6,
+        keys: [
+          "name"
+        ]
+      };
+
+      var fuseMe = new fuse(examples, options);
+
+      result = fuseMe.search(searchStr);
+      let curated_result = [];
+      result.forEach((item, index) => {
+
+        curated_result.push({
+          'choice': item["item"]["name"],
+          'i': index,
+          'score': item["score"]
+        });
+      });
+
+      res.status(200).json({
+        success: true,
+        message: `Fuzzy custom invoked successfully for ${name}`,
+        payload: curated_result
+      });
+      ///////////////////////////FUSE///////////////////////////
+    } else if (name === 'jarowinkler') {
+      ///////////////////////////JARO WINKLER///////////////////////////
+      let result = [];
+
+      //Iterate over Array of examples
+      if (searchStr) {
+        examples.forEach((example, index) => {
+          let i = index;
+          let score = jaroWinkler(searchStr, example['name']);
+          result.push({
+            'choice': example['name'],
+            'index': i,
+            'score': score
+          });
+        });
+
+        result = _.orderBy(result, 'score', ['desc']);
+      }
+
+      res.status(200).json({
+        success: true,
+        message: `Fuzzy custom invoked successfully for ${name}`,
+        payload: result
+      });
+      ///////////////////////////JARO WINKLER///////////////////////////
+    } else {
+      ///////////////////////////LEVENSHTEIN///////////////////////////
       options = {
         scorer: fuzzball.distance,
         processor: example => example.name
@@ -344,7 +372,8 @@ exports.fuzzy_custom = async (req, res, next) => {
           payload: curated_result
         });
       });
-    }
+      ///////////////////////////LEVENSHTEIN///////////////////////////
+    } // end of if
     //++++++++++++++++++++++++++++++++ DISTANCE +++++++++++++++++++++++++++++++/
 
 
