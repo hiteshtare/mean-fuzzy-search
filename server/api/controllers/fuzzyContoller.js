@@ -1,5 +1,4 @@
 const request = require("request-promise");
-
 const daitchMokotoff = require('talisman/phonetics/daitch-mokotoff');
 const doubleMetaphone = require('talisman/phonetics/double-metaphone');
 const soundex = require('soundex');
@@ -8,35 +7,16 @@ const symlar = require('symlar')
 
 const fuzzball = require('fuzzball');
 const fuse = require('fuse.js');
-var jaroWinkler = require('jaro-winkler');
+const jaroWinkler = require('jaro-winkler');
 
-//const Thinker = require('thinker-fts');
+const lunr = require('lunr');
+// const Thinker = require('thinker-fts');
+const fingerprint = require('ngram-fingerprint')
 
 const _ = require("lodash");
-var path = require('path');
+const path = require('path');
 
 const examples = require('./example.json');
-
-// console.log(`fuzzball.distance("Here", "Hear ")`);
-// console.log(jaroWinkler("Here", "Hear "));
-// console.log(`jaroWinkler("fuzzbally was a bear", "fozzy was a bear")`);
-// console.log(jaroWinkler("fuzzbally was a bear", "fozzy was a bear"));
-// console.log(`jaroWinkler("John", "John")`);
-// console.log(jaroWinkler("John", "John"));
-// console.log(`jaroWinkler("John", "Johny")`);
-// console.log(jaroWinkler("John", "Johny"));
-// console.log(`jaroWinkler("John", "Jonny")`);
-// console.log(jaroWinkler("John", "Jonny"));
-// console.log(`jaroWinkler("John", "Johnson")`);
-// console.log(jaroWinkler("John", "Johnson"));
-// console.log(`jaroWinkler("John", "Joe")`);
-// console.log(jaroWinkler("John", "Joe"));
-// console.log(`jaroWinkler("Joe", "Joy")`);
-// console.log(jaroWinkler("Joe", "Joy"));
-// console.log(`jaroWinkler("Joe", "Joe")`);
-// console.log(jaroWinkler("Joe", "Joe"));
-// console.log(`jaroWinkler("Joe", "Jo")`);
-// console.log(jaroWinkler("Joe", "Jo"));
 
 exports.fuzzy_default = async (req, res, next) => {
   try {
@@ -289,6 +269,76 @@ exports.fuzzy_custom = async (req, res, next) => {
       ///////////////////////////Fuzzball  Partial_Ratio///////////////////////////
     }
     /**************************** PHONETIC ************************************/
+    //########################### STEMMER ####################################/
+    else if (name === 'lunr') {
+      ///////////////////////////LUNR///////////////////////////
+      let curated_result = [];
+      var result = [];
+
+      if (searchStr) {
+        var idx = lunr(function () {
+          this.ref('name');
+          this.field('name');
+
+          examples.forEach((example, index) => {
+            let i = index;
+            this.add(example);
+          }, this);
+        });
+
+        let newSearchStr = `${searchStr}~2`; //fuzzyness
+        result = idx.search(newSearchStr);
+      }
+
+      result.forEach((item, index) => {
+        curated_result.push({
+          'choice': item["ref"],
+          'i': index,
+          'score': item["score"]
+        });
+      });
+
+      curated_result = _.orderBy(curated_result, 'score', ['desc']);
+
+
+      res.status(200).json({
+        success: true,
+        message: `Fuzzy custom invoked successfully for ${name}`,
+        payload: curated_result
+      });
+    } else if (name === 'ngram') {
+      ///////////////////////////NGRAM///////////////////////////
+      var result = [];
+
+      examples.forEach((example, index) => {
+        let i = index;
+        let score = fingerprint(2, example['name']);
+        result.push({
+          'choice': example['name'],
+          'index': i,
+          'score': score
+        });
+      });
+
+      result = _.orderBy(result, 'score', ['desc']);
+
+      if (searchStr) {
+        let score = fingerprint(2, searchStr);
+        result.unshift({
+          'choice': searchStr,
+          'index': 0,
+          'score': score
+        });
+      }
+
+      res.status(200).json({
+        success: true,
+        message: `Fuzzy custom invoked successfully for ${name}`,
+        payload: result
+      });
+    }
+    ///////////////////////////NGRAM///////////////////////////
+    //########################### STEMMER ####################################/
     //+++++++++++++++++++++++++++ DISTANCE ++++++++++++++++++++++++++++++++++++/
     else if (name === 'fuse') {
       ///////////////////////////FUSE///////////////////////////
@@ -385,43 +435,3 @@ exports.fuzzy_custom = async (req, res, next) => {
     });
   }
 };
-
-function closest(num, arr) {
-  var curr = arr[0];
-  var diff = Math.abs(num - curr);
-  for (var val = 0; val < arr.length; val++) {
-    var newdiff = Math.abs(num - arr[val]);
-    if (newdiff < diff) {
-      diff = newdiff;
-      curr = arr[val];
-    }
-  }
-  return curr;
-}
-
-
-function thinkerImplementation() {
-  var
-    thinker = Thinker(),
-    ranker = Thinker.rankers.standard(),
-    thinker_soundex = Thinker.processors.soundex();
-
-  thinker.addWordProcessor(thinker_soundex);
-  thinker.ranker = ranker;
-
-  let tempArr = [];
-  examples.forEach((example, index) => {
-    tempArr[index] = {
-      id: index,
-      fields: example
-    };
-  });
-
-  thinker.feed(tempArr);
-
-  // Search for text
-  var result = thinker.find('India');
-
-  // Show result
-  console.log(result);
-}
