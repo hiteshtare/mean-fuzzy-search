@@ -16,7 +16,7 @@
     </span>
   </div>
   <div>
-    <h3>Choose Search Algorithm :</h3>
+    <h3>Choose Phonetic Algorithm :</h3>
     <div class="ui-g" style="width:700px;margin-bottom:10px">
 
       <div class="ui-g-3">
@@ -66,6 +66,15 @@
   <p-radioButton name="chkgrpFuzzBall" value="token_set_ratio" label="Token Set Ratio" [(ngModel)]="selectedFuzzBallValue"
     inputId="token_set_ratio"></p-radioButton>
 </div> -->
+    </div>
+  </div>
+  <div>
+    <h3>Choose Distance Algorithm :</h3>
+    <div class="ui-g" style="width:700px;margin-bottom:10px">
+      <div class="ui-g-3">
+        <p-radioButton name="rdPhonetics" value="levenshtein" label="Levenshtein" [(ngModel)]="selectedPhoneticValue"
+          (ngModelChange)="onTxtSearchChange($event)" inputId="levenshtein"></p-radioButton>
+      </div>
     </div>
   </div>
 </div>

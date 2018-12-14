@@ -15,6 +15,27 @@ var path = require('path');
 
 const examples = require('./example.json');
 
+// console.log(`fuzzball.distance("Here", "Hear ")`);
+// console.log(fuzzball.distance("Here", "Hear "));
+// console.log(`fuzzball.distance("fuzzbally was a bear", "fozzy was a bear")`);
+// console.log(fuzzball.distance("fuzzbally was a bear", "fozzy was a bear"));
+// console.log(`fuzzball.distance("John", "John")`);
+// console.log(fuzzball.distance("John", "John"));
+// console.log(`fuzzball.distance("John", "Johny")`);
+// console.log(fuzzball.distance("John", "Johny"));
+// console.log(`fuzzball.distance("John", "Jonny")`);
+// console.log(fuzzball.distance("John", "Jonny"));
+// console.log(`fuzzball.distance("John", "Johnson")`);
+// console.log(fuzzball.distance("John", "Johnson"));
+// console.log(`fuzzball.distance("John", "Joe")`);
+// console.log(fuzzball.distance("John", "Joe"));
+// console.log(`fuzzball.distance("Joe", "Joy")`);
+// console.log(fuzzball.distance("Joe", "Joy"));
+// console.log(`fuzzball.distance("Joe", "Joe")`);
+// console.log(fuzzball.distance("Joe", "Joe"));
+// console.log(`fuzzball.distance("Joe", "Jo")`);
+// console.log(fuzzball.distance("Joe", "Jo"));
+
 exports.fuzzy_default = async (req, res, next) => {
   try {
 
@@ -47,13 +68,13 @@ exports.fuzzy_default = async (req, res, next) => {
 exports.fuzzy_custom = async (req, res, next) => {
   try {
     const searchStr = req.body.searchStr;
-    const phoneticName = req.body.phoneticName;
+    const name = req.body.name;
 
-    console.log(`PHONETIC selected : ${phoneticName}`);
-    // console.log(symlar.phonesim('Break', 'Brake'));
+    console.log(`Selected : ${name}`);
 
+    /**************************** PHONETIC ************************************/
     ///////////////////////////Daitch Mokotoff///////////////////////////
-    if (phoneticName === 'daitchmokotoff') {
+    if (name === 'daitchmokotoff') {
       let result = [];
 
       //Iterate over Array of examples
@@ -80,11 +101,11 @@ exports.fuzzy_custom = async (req, res, next) => {
 
       res.status(200).json({
         success: true,
-        message: `Fuzzy custom invoked successfully for ${phoneticName}`,
+        message: `Fuzzy custom invoked successfully for ${name}`,
         payload: result
       });
       ///////////////////////////Daitch Mokotoff///////////////////////////
-    } else if (phoneticName === 'doublemetaphone') {
+    } else if (name === 'doublemetaphone') {
       ///////////////////////////Double Metaphone///////////////////////////
       let result = [];
 
@@ -112,11 +133,11 @@ exports.fuzzy_custom = async (req, res, next) => {
 
       res.status(200).json({
         success: true,
-        message: `Fuzzy custom invoked successfully for ${phoneticName}`,
+        message: `Fuzzy custom invoked successfully for ${name}`,
         payload: result
       });
       ///////////////////////////Double Metaphone///////////////////////////
-    } else if (phoneticName === 'soundex') {
+    } else if (name === 'soundex') {
       ///////////////////////////SOUNDEX///////////////////////////
       let result = [];
 
@@ -144,11 +165,11 @@ exports.fuzzy_custom = async (req, res, next) => {
 
       res.status(200).json({
         success: true,
-        message: `Fuzzy custom invoked successfully for ${phoneticName}`,
+        message: `Fuzzy custom invoked successfully for ${name}`,
         payload: result
       });
       ///////////////////////////SOUNDEX///////////////////////////
-    } else if (phoneticName === 'fuse') {
+    } else if (name === 'fuse') {
       ///////////////////////////FUSE///////////////////////////
       let result = [];
 
@@ -176,11 +197,11 @@ exports.fuzzy_custom = async (req, res, next) => {
 
       res.status(200).json({
         success: true,
-        message: `Fuzzy custom invoked successfully for ${phoneticName}`,
+        message: `Fuzzy custom invoked successfully for ${name}`,
         payload: curated_result
       });
       ///////////////////////////FUSE///////////////////////////
-    } else if (phoneticName === 'naturalmetaphone') {
+    } else if (name === 'naturalmetaphone') {
       ///////////////////////////NATURAL METAPHONE///////////////////////////
       var metaphone = natural.Metaphone;
 
@@ -210,11 +231,11 @@ exports.fuzzy_custom = async (req, res, next) => {
 
       res.status(200).json({
         success: true,
-        message: `Fuzzy custom invoked successfully for ${phoneticName}`,
+        message: `Fuzzy custom invoked successfully for ${name}`,
         payload: result
       });
       ///////////////////////////NATURAL METAPHONE///////////////////////////
-    } else if (phoneticName === 'naturalsoundex') {
+    } else if (name === 'naturalsoundex') {
       ///////////////////////////NATURAL SOUNDEX///////////////////////////
       var metaphone = natural.SoundEx;
 
@@ -244,11 +265,11 @@ exports.fuzzy_custom = async (req, res, next) => {
 
       res.status(200).json({
         success: true,
-        message: `Fuzzy custom invoked successfully for ${phoneticName}`,
+        message: `Fuzzy custom invoked successfully for ${name}`,
         payload: result
       });
       ///////////////////////////NATURAL SOUNDEX///////////////////////////
-    } else if (phoneticName === 'symlar') {
+    } else if (name === 'symlar') {
       ///////////////////////////SYMLAR///////////////////////////
       let result = [];
 
@@ -269,11 +290,11 @@ exports.fuzzy_custom = async (req, res, next) => {
 
       res.status(200).json({
         success: true,
-        message: `Fuzzy custom invoked successfully for ${phoneticName}`,
+        message: `Fuzzy custom invoked successfully for ${name}`,
         payload: result
       });
       ///////////////////////////SYMLAR///////////////////////////
-    } else {
+    } else if (name === "fuzzball") {
       ///////////////////////////Fuzzball  Partial_Ratio///////////////////////////
       options = {
         scorer: fuzzball.partial_ratio,
@@ -291,12 +312,41 @@ exports.fuzzy_custom = async (req, res, next) => {
         });
         res.status(200).json({
           success: true,
-          message: `Fuzzy custom invoked successfully for ${phoneticName}`,
+          message: `Fuzzy custom invoked successfully for ${name}`,
           payload: curated_result
         });
       });
       ///////////////////////////Fuzzball  Partial_Ratio///////////////////////////
     } // end of if
+    /**************************** PHONETIC ************************************/
+    //+++++++++++++++++++++++++++ DISTANCE ++++++++++++++++++++++++++++++++++++/
+    else {
+      options = {
+        scorer: fuzzball.distance,
+        processor: example => example.name
+      };
+
+      fuzzball.extractAsPromised(searchStr, examples, options).then(result => {
+        let curated_result = [];
+        result.forEach((item, index) => {
+          curated_result.push({
+            'choice': item[0]["name"],
+            'i': item[2],
+            'score': item[1]
+          });
+        });
+
+        curated_result = _.orderBy(curated_result, 'score', ['asc']);
+
+        res.status(200).json({
+          success: true,
+          message: `Fuzzy custom invoked successfully for ${name}`,
+          payload: curated_result
+        });
+      });
+    }
+    //++++++++++++++++++++++++++++++++ DISTANCE +++++++++++++++++++++++++++++++/
+
 
   } catch (err) {
     console.log(err);
