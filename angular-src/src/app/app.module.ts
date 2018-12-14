@@ -13,14 +13,19 @@ import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
 import { CheckboxModule } from 'primeng/checkbox';
 import { RadioButtonModule } from 'primeng/radiobutton';
+import { FieldsetModule } from 'primeng/fieldset';
 // PrimeNG Modules
 
 import { FuzzyApiService } from './shared/services/fuzzy-api.service';
+import { DefaultComponent } from './components/default/default.component';
+import { CustomComponent } from './components/custom/custom.component';
 
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    DefaultComponent,
+    CustomComponent
   ],
   imports: [
     BrowserModule,
@@ -32,7 +37,8 @@ import { FuzzyApiService } from './shared/services/fuzzy-api.service';
     ButtonModule,
     InputTextModule,
     CheckboxModule,
-    RadioButtonModule
+    RadioButtonModule,
+    FieldsetModule
   ],
   providers: [FuzzyApiService],
   bootstrap: [AppComponent]

@@ -1,6 +1,6 @@
 .feature-title {
   font-size: 30px;
-  margin-bottom: 5px;
+  margin-bottom: 20px;
   display: block;
 }
 
@@ -28,9 +28,4 @@ button {
 
 .loader {
   background-color: #c8c8c8;
-}
-
-.ui-fieldset {
-  background-color: purple !important;
-  color: #fff !important;
 }
