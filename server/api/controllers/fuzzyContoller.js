@@ -74,11 +74,15 @@ exports.fuzzy_custom = async (req, res, next) => {
 
       if (searchStr) {
         let score = daitchMokotoff(searchStr);
-        result.unshift({
-          'choice': searchStr,
-          'index': 0,
-          'score': score
-        });
+        // result.unshift({
+        //   'choice': searchStr,
+        //   'index': 0,
+        //   'score': score
+        // });
+
+        result.unshift(result.splice(result.findIndex((item) => {
+          return _.isEqual(item.score.sort(), score.sort());
+        }), 1)[0]);
       }
 
       res.status(200).json({
@@ -106,11 +110,15 @@ exports.fuzzy_custom = async (req, res, next) => {
 
       if (searchStr) {
         let score = doubleMetaphone(searchStr);
-        result.unshift({
-          'choice': searchStr,
-          'index': 0,
-          'score': score
-        });
+        // result.unshift({
+        //   'choice': searchStr,
+        //   'index': 0,
+        //   'score': score
+        // });
+
+        result.unshift(result.splice(result.findIndex((item) => {
+          return _.isEqual(item.score.sort(), score.sort());
+        }), 1)[0]);
       }
 
       res.status(200).json({
@@ -138,11 +146,13 @@ exports.fuzzy_custom = async (req, res, next) => {
 
       if (searchStr) {
         let score = soundex(searchStr);
-        result.unshift({
-          'choice': searchStr,
-          'index': 0,
-          'score': score
-        });
+        // result.unshift({
+        //   'choice': searchStr,
+        //   'index': 0,
+        //   'score': score
+        // });
+
+        result.unshift(result.splice(result.findIndex(item => item.score === score), 1)[0]);
       }
 
       res.status(200).json({
@@ -172,11 +182,13 @@ exports.fuzzy_custom = async (req, res, next) => {
 
       if (searchStr) {
         let score = metaphone.process(searchStr);
-        result.unshift({
-          'choice': searchStr,
-          'index': 0,
-          'score': score
-        });
+        // result.unshift({
+        //   'choice': searchStr,
+        //   'index': 0,
+        //   'score': score
+        // });
+
+        result.unshift(result.splice(result.findIndex(item => item.score === score), 1)[0]);
       }
 
       res.status(200).json({
@@ -206,11 +218,13 @@ exports.fuzzy_custom = async (req, res, next) => {
 
       if (searchStr) {
         let score = metaphone.process(searchStr);
-        result.unshift({
-          'choice': searchStr,
-          'index': 0,
-          'score': score
-        });
+        // result.unshift({
+        //   'choice': searchStr,
+        //   'index': 0,
+        //   'score': score
+        // });
+
+        result.unshift(result.splice(result.findIndex(item => item.score === score), 1)[0]);
       }
 
       res.status(200).json({
@@ -256,7 +270,7 @@ exports.fuzzy_custom = async (req, res, next) => {
         result.forEach((item, index) => {
           curated_result.push({
             'choice': item[0]["name"],
-            'i': item[2],
+            'index': item[2],
             'score': item[1]
           });
         });
@@ -293,7 +307,7 @@ exports.fuzzy_custom = async (req, res, next) => {
       result.forEach((item, index) => {
         curated_result.push({
           'choice': item["ref"],
-          'i': index,
+          'index': index,
           'score': item["score"]
         });
       });
@@ -324,11 +338,13 @@ exports.fuzzy_custom = async (req, res, next) => {
 
       if (searchStr) {
         let score = fingerprint(2, searchStr);
-        result.unshift({
-          'choice': searchStr,
-          'index': 0,
-          'score': score
-        });
+        // result.unshift({
+        //   'choice': searchStr,
+        //   'index': 0,
+        //   'score': score
+        // });
+
+        result.unshift(result.splice(result.findIndex(item => item.score === score), 1)[0]);
       }
 
       res.status(200).json({
@@ -361,7 +377,7 @@ exports.fuzzy_custom = async (req, res, next) => {
 
         curated_result.push({
           'choice': item["item"]["name"],
-          'i': index,
+          'index': index,
           'score': item["score"]
         });
       });
@@ -409,7 +425,7 @@ exports.fuzzy_custom = async (req, res, next) => {
         result.forEach((item, index) => {
           curated_result.push({
             'choice': item[0]["name"],
-            'i': item[2],
+            'index': item[2],
             'score': item[1]
           });
         });
