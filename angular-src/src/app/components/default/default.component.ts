@@ -18,12 +18,11 @@ export class DefaultComponent implements OnInit {
 
   // tslint:disable-next-line:use-life-cycle-interface
   ngOnInit() {
-    // this.loadDefaultResults();
-    this.loadCustomResults();
+    this.loadDefaultResults();
   }
 
   onTxtSearchChange(value) {
-    this.loadCustomResults();
+    this.loadDefaultResults();
   }
 
   get rapidPageValue() {
@@ -39,12 +38,6 @@ export class DefaultComponent implements OnInit {
   }
 
   loadDefaultResults() {
-    this.fuzzyApiService.getDefaultResults().subscribe((data) => {
-      this.results = data['payload'];
-    });
-  }
-
-  loadCustomResults() {
     const value = this.selectedPhoneticValue[0] === '' ? 'fuzzball' : this.selectedPhoneticValue;
 
     const options = {
@@ -52,7 +45,7 @@ export class DefaultComponent implements OnInit {
       'name': value
     };
 
-    this.fuzzyApiService.getCustomResults(options).subscribe((data) => {
+    this.fuzzyApiService.getDefaultResults(options).subscribe((data) => {
       this.results = data['payload'];
     });
   }

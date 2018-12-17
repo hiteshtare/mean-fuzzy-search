@@ -3,8 +3,8 @@ const router = express.Router();
 
 const FuzzyContoller = require('../controllers/fuzzyContoller');
 
-router.get("/", FuzzyContoller.fuzzy_default);
+router.post("/default/", FuzzyContoller.fuzzy_default);
 
-router.post("/", FuzzyContoller.fuzzy_custom);
+router.post("/custom/", FuzzyContoller.fuzzy_custom);
 
 module.exports = router;

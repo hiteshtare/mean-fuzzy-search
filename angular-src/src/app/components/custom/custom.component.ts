@@ -67,12 +67,6 @@ export class CustomComponent implements OnInit {
     }
   }
 
-  loadDefaultResults() {
-    this.fuzzyApiService.getDefaultResults().subscribe((data) => {
-      this.results = data['payload'];
-    });
-  }
-
   loadCustomResults() {
     const value = this.selectedPhoneticValue[0] === '' ? 'fuzzball' : this.selectedPhoneticValue;
 

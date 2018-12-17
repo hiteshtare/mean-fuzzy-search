@@ -18,14 +18,14 @@ export class FuzzyApiService {
   constructor(private http: HttpClient) {
   }
 
-  getDefaultResults(): Observable<Response> {
-    return this.http.get(`${this.fuzzyApiUrl}/fuzzy`).pipe(map((data: Response) => {
+  getDefaultResults(options): Observable<Response> {
+    return this.http.post(`${this.fuzzyApiUrl}/fuzzy/default/`, options).pipe(map((data: Response) => {
       return data;
     }));
   }
 
   getCustomResults(options): Observable<Response> {
-    return this.http.post(`${this.fuzzyApiUrl}/fuzzy/`, options).pipe(map((data: Response) => {
+    return this.http.post(`${this.fuzzyApiUrl}/fuzzy/custom/`, options).pipe(map((data: Response) => {
       return data;
     }));
   }
