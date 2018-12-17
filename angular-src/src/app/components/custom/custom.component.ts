@@ -33,7 +33,7 @@ export class CustomComponent implements OnInit {
   langControlMetada: Array<FormControlMetadata> = [];
   selectedAlgorithmCount = 0;
   missingLanguage = false;
-  test: any;
+  computedValue: any;
 
   selectedPhoneticValue: string[] = ['levenshtein']; // ['ratio']
 
@@ -68,16 +68,58 @@ export class CustomComponent implements OnInit {
   }
 
   loadCustomResults() {
-    const value = this.selectedPhoneticValue[0] === '' ? 'fuzzball' : this.selectedPhoneticValue;
+    // Default Value
+    const value = typeof (this.computedValue) === 'undefined' ? [{ value: 'fuzzball', text: 2 }] : this.computedValue;
 
     const options = {
       'searchStr': this.txtSearch,
-      'name': value
+      'selectedAlgorithms': value
     };
 
     this.fuzzyApiService.getCustomResults(options).subscribe((data) => {
       this.results = data['payload'];
     });
+  }
+
+  public submit(e: any): void {
+    e.preventDefault();
+
+    // Reset
+    const selectedLanguageList: Array<Item> = [];
+    const searchAlgorithm = this.searchAlgorithms();
+    let i: number;
+    // Checkbox id
+    let languageId;
+
+    for (i = 0; i < searchAlgorithm.controls.length; i++) {
+
+      const control = searchAlgorithm.controls[i] as FormGroup;
+      const selectedLanguage = {} as any;
+
+      // tslint:disable-next-line:forin
+      for (const k in control.controls) {
+        languageId = k.split('_')[1];
+        break;
+      }
+
+      const value = control.controls[`${Common.CheckboxPrefix}${languageId}`].value;
+      // Capture the selected checkbox Id and textbox value
+      if (value.length !== 0) {
+        selectedLanguage.value = languageId;
+        selectedLanguage.text = control.controls[`${Common.OtherPrefix}${languageId}`].value;
+        selectedLanguageList.push(selectedLanguage);
+      }
+    }
+
+    if (selectedLanguageList.length === 0) {
+      this.missingLanguage = true;
+    } else {
+      this.missingLanguage = false;
+      this.computedValue = selectedLanguageList;
+
+      // Submit to API
+      this.loadCustomResults();
+    }
   }
 
   populateSearchAlgorithm() {
@@ -144,48 +186,6 @@ export class CustomComponent implements OnInit {
     }
   }
 
-  public submit(e: any): void {
-    e.preventDefault();
-
-    // Reset
-    const selectedLanguageList: Array<Item> = [];
-    const searchAlgorithm = this.searchAlgorithms();
-    let i: number;
-    // Checkbox id
-    let languageId;
-
-    for (i = 0; i < searchAlgorithm.controls.length; i++) {
-
-      const control = searchAlgorithm.controls[i] as FormGroup;
-      const selectedLanguage = {} as any;
-
-      // tslint:disable-next-line:forin
-      for (const k in control.controls) {
-        languageId = k.split('_')[1];
-        break;
-      }
-
-      const value = control.controls[`${Common.CheckboxPrefix}${languageId}`].value;
-      // Capture the selected checkbox Id and textbox value
-      if (value.length !== 0) {
-        selectedLanguage.value = languageId;
-        selectedLanguage.text = control.controls[`${Common.OtherPrefix}${languageId}`].value;
-        selectedLanguageList.push(selectedLanguage);
-      }
-    }
-
-    if (selectedLanguageList.length === 0) {
-      this.missingLanguage = true;
-    } else {
-      // Submit to API
-      const formObjectToApi = new FormObjectToApi();
-
-      formObjectToApi.selectedAlgorithms = selectedLanguageList;
-
-      this.missingLanguage = false;
-      this.test = formObjectToApi;
-    }
-  }
 }// End of CustomComponent class
 
 class Item {

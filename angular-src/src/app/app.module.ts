@@ -20,13 +20,15 @@ import { FieldsetModule } from 'primeng/fieldset';
 import { FuzzyApiService } from './shared/services/fuzzy-api.service';
 import { DefaultComponent } from './components/default/default.component';
 import { CustomComponent } from './components/custom/custom.component';
+import { NumberOnlyDirective } from './shared/directives/number-only.directive';
 
 
 @NgModule({
   declarations: [
     AppComponent,
     DefaultComponent,
-    CustomComponent
+    CustomComponent,
+    NumberOnlyDirective
   ],
   imports: [
     BrowserModule,

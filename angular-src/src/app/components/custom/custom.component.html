@@ -26,8 +26,8 @@
                       [formControlName]="item.checkboxName" [inputId]="item.checkboxName" (onChange)="languageSelectionChange
 (i, item.checkboxName, item.associateControlName)"></p-checkbox>
                     <input *ngIf="item.associateControlType == 'textbox'" [id]="item.associateControlName"
-                      [formControlName]="item.associateControlName" class="form-control form-control-sm" type="text"
-                      placeholder="(0-100)" size="4" maxlength="2" pInputText>
+                      [formControlName]="item.associateControlName" class="form-control form-control-sm" type="number"
+                      placeholder="(0-100)" myNumberOnly pInputText>
                   </div>
                 </div>
               </div>
@@ -45,7 +45,7 @@
         <br>
         <div class="form-group row">
           <div class="col-xs-12">
-            Output: {{test | json}}
+            Output: {{computedValue | json}}
           </div>
         </div>
       </form>
