@@ -430,401 +430,152 @@ exports.fuzzy_custom = async (req, res, next) => {
     const searchStr = req.body.searchStr;
     const selectedAlgorithms = req.body.selectedAlgorithms;
 
-    selectedAlgorithms.forEach((algorithm) => {
-      const name = algorithm.value;
-      const weight = algorithm.text;
+    let results = [];
 
-      console.log(`Algorithm >> Name : ${name} | Weight : ${weight}`);
+    examples.forEach((example, index) => {
+      selectedAlgorithms.forEach((algorithm, a_index) => {
+        const name = algorithm.value;
+        const weight = algorithm.text;
 
-      /**************************** PHONETIC ************************************/
-      ///////////////////////////Daitch Mokotoff///////////////////////////
-      if (name === 'daitchmokotoff') {
-        let result = [];
+        console.log(`Algorithm >> Name : ${name} | Weight : ${weight}`);
 
-        //Iterate over Array of examples
-        examples.forEach((example, index) => {
-          let i = index;
-          let score = daitchMokotoff(example['name']);
-          result.push({
+        if (a_index === 0) {
+          results.push({
             'choice': example['name'],
-            'index': i,
-            'score': score
+            'index': index
           });
-        });
-
-        result = _.orderBy(result, 'score', ['desc']);
-
-        if (searchStr) {
-          let score = daitchMokotoff(searchStr);
-          // result.unshift({
-          //   'choice': searchStr,
-          //   'index': 0,
-          //   'score': score
-          // });
-
-          result.unshift(result.splice(result.findIndex((item) => {
-            return _.isEqual(item.score.sort(), score.sort());
-          }), 1)[0]);
-        }
-
-        // res.status(200).json({
-        //   success: true,
-        //   message: `FUZZY - CUSTOM invoked successfully for ${name}`,
-        //   payload: result
-        // });
-        ///////////////////////////Daitch Mokotoff///////////////////////////
-      } else if (name === 'doublemetaphone') {
-        ///////////////////////////Double Metaphone///////////////////////////
-        let result = [];
-
-        //Iterate over Array of examples
-        examples.forEach((example, index) => {
-          let i = index;
-          let score = doubleMetaphone(example['name']);
-          result.push({
-            'choice': example['name'],
-            'index': i,
-            'score': score
-          });
-        });
-
-        result = _.orderBy(result, 'score', ['desc']);
-
-        if (searchStr) {
-          let score = doubleMetaphone(searchStr);
-          // result.unshift({
-          //   'choice': searchStr,
-          //   'index': 0,
-          //   'score': score
-          // });
-
-          result.unshift(result.splice(result.findIndex((item) => {
-            return _.isEqual(item.score.sort(), score.sort());
-          }), 1)[0]);
-        }
-
-        // res.status(200).json({
-        //   success: true,
-        //   message: `FUZZY - CUSTOM invoked successfully for ${name}`,
-        //   payload: result
-        // });
-        ///////////////////////////Double Metaphone///////////////////////////
-      } else if (name === 'soundex') {
-        ///////////////////////////SOUNDEX///////////////////////////
-        let result = [];
-
-        //Iterate over Array of examples
-        examples.forEach((example, index) => {
-          let i = index;
-          let score = soundex(example['name']);
-          result.push({
-            'choice': example['name'],
-            'index': i,
-            'score': score
-          });
-        });
-
-        result = _.orderBy(result, 'score', ['desc']);
-
-        if (searchStr) {
-          let score = soundex(searchStr);
-          // result.unshift({
-          //   'choice': searchStr,
-          //   'index': 0,
-          //   'score': score
-          // });
-
-          result.unshift(result.splice(result.findIndex(item => item.score === score), 1)[0]);
-        }
-
-        // res.status(200).json({
-        //   success: true,
-        //   message: `FUZZY - CUSTOM invoked successfully for ${name}`,
-        //   payload: result
-        // });
-        ///////////////////////////SOUNDEX///////////////////////////
-      } else if (name === 'naturalmetaphone') {
-        ///////////////////////////NATURAL METAPHONE///////////////////////////
-        var metaphone = natural.Metaphone;
-
-        let result = [];
-
-        //Iterate over Array of examples
-        examples.forEach((example, index) => {
-          let i = index;
-          let score = metaphone.process(example['name']);
-          result.push({
-            'choice': example['name'],
-            'index': i,
-            'score': score
-          });
-        });
-
-        result = _.orderBy(result, 'score', ['desc']);
-
-        if (searchStr) {
-          let score = metaphone.process(searchStr);
-          // result.unshift({
-          //   'choice': searchStr,
-          //   'index': 0,
-          //   'score': score
-          // });
-
-          result.unshift(result.splice(result.findIndex(item => item.score === score), 1)[0]);
-        }
-
-        // res.status(200).json({
-        //   success: true,
-        //   message: `FUZZY - CUSTOM invoked successfully for ${name}`,
-        //   payload: result
-        // });
-        ///////////////////////////NATURAL METAPHONE///////////////////////////
-      } else if (name === 'naturalsoundex') {
-        ///////////////////////////NATURAL SOUNDEX///////////////////////////
-        var metaphone = natural.SoundEx;
-
-        let result = [];
-
-        //Iterate over Array of examples
-        examples.forEach((example, index) => {
-          let i = index;
-          let score = metaphone.process(example['name']);
-          result.push({
-            'choice': example['name'],
-            'index': i,
-            'score': score
-          });
-        });
-
-        result = _.orderBy(result, 'score', ['desc']);
-
-        if (searchStr) {
-          let score = metaphone.process(searchStr);
-          // result.unshift({
-          //   'choice': searchStr,
-          //   'index': 0,
-          //   'score': score
-          // });
-
-          result.unshift(result.splice(result.findIndex(item => item.score === score), 1)[0]);
-        }
-
-        // res.status(200).json({
-        //   success: true,
-        //   message: `FUZZY - CUSTOM invoked successfully for ${name}`,
-        //   payload: result
-        // });
-        ///////////////////////////NATURAL SOUNDEX///////////////////////////
-      } else if (name === 'symlar') {
-        ///////////////////////////SYMLAR///////////////////////////
-        let result = [];
-
-        //Iterate over Array of examples
-        if (searchStr) {
-          examples.forEach((example, index) => {
-            let i = index;
-            let score = symlar.phonesim(searchStr, example['name']);
-            result.push({
-              'choice': example['name'],
-              'index': i,
-              'score': score
-            });
-          });
-
-          result = _.orderBy(result, 'score', ['desc']);
-        }
-
-        // res.status(200).json({
-        //   success: true,
-        //   message: `FUZZY - CUSTOM invoked successfully for ${name}`,
-        //   payload: result
-        // });
-        ///////////////////////////SYMLAR///////////////////////////
-      } else if (name === "fuzzball") {
-        ///////////////////////////Fuzzball  Partial_Ratio///////////////////////////
-        options = {
-          scorer: fuzzball.partial_ratio,
-          processor: example => example.name
         };
 
-        fuzzball.extractAsPromised(searchStr, examples, options).then(result => {
-          let curated_result = [];
-          result.forEach((item, index) => {
-            curated_result.push({
-              'choice': item[0]["name"],
-              'index': item[2],
-              'score': item[1]
+        var score = 0;
+        if (name === 'daitchmokotoff') {
+          score = daitchMokotoff(example['name']);
+        } else if (name === 'doublemetaphone') {
+          score = doubleMetaphone(example['name']);
+        } else if (name === 'soundex') {
+          score = soundex(example['name']);
+        } else if (name === 'naturalmetaphone') {
+          var metaphone = natural.Metaphone;
+          score = metaphone.process(example['name']);
+        } else if (name === 'naturalmetaphone') {
+          var metaphone = natural.SoundEx;
+          score = metaphone.process(example['name']);
+        } else if (name === 'symlar') {
+          score = symlar.phonesim(searchStr, example['name']);
+        } else if (name === 'fuzzball') {
+          options = {
+            scorer: fuzzball.partial_ratio,
+            processor: example => example.name
+          };
+
+          fuzzball.extractAsPromised(searchStr, examples, options).then(result => {
+            let curated_result = [];
+            result.forEach((item, index) => {
+              curated_result.push({
+                'choice': item[0]["name"],
+                'index': item[2],
+                'score': item[1]
+              });
             });
           });
-          // res.status(200).json({
-          //   success: true,
-          //   message: `FUZZY - CUSTOM invoked successfully for ${name}`,
-          //   payload: curated_result
-          // });
-        });
-        ///////////////////////////Fuzzball  Partial_Ratio///////////////////////////
-      }
-      /**************************** PHONETIC ************************************/
-      //########################### STEMMER ####################################/
-      else if (name === 'lunr') {
-        ///////////////////////////LUNR///////////////////////////
-        let curated_result = [];
-        var result = [];
+        } else if (name === 'lunr') {
+          let curated_result = [];
+          var result = [];
 
-        if (searchStr) {
-          var idx = lunr(function () {
-            this.ref('name');
-            this.field('name');
+          if (searchStr) {
+            var idx = lunr(function () {
+              this.ref('name');
+              this.field('name');
 
-            examples.forEach((example, index) => {
-              let i = index;
-              this.add(example);
-            }, this);
+              examples.forEach((example, index) => {
+                let i = index;
+                this.add(example);
+              }, this);
+            });
+
+            let newSearchStr = `${searchStr}~2`; //fuzzyness
+            result = idx.search(newSearchStr);
+          }
+
+          result.forEach((item, index) => {
+            curated_result.push({
+              'choice': item["ref"],
+              'index': index,
+              'score': item["score"]
+            });
           });
 
-          let newSearchStr = `${searchStr}~2`; //fuzzyness
-          result = idx.search(newSearchStr);
+          curated_result = _.orderBy(curated_result, 'score', ['desc']);
+
+        } else if (name === 'ngram') {
+          ///////////////////////////NGRAM///////////////////////////
+          score = fingerprint(2, example['name']);
         }
-
-        result.forEach((item, index) => {
-          curated_result.push({
-            'choice': item["ref"],
-            'index': index,
-            'score': item["score"]
-          });
-        });
-
-        curated_result = _.orderBy(curated_result, 'score', ['desc']);
-
-
-        // res.status(200).json({
-        //   success: true,
-        //   message: `FUZZY - CUSTOM invoked successfully for ${name}`,
-        //   payload: curated_result
-        // });
-      } else if (name === 'ngram') {
         ///////////////////////////NGRAM///////////////////////////
-        var result = [];
+        //########################### STEMMER ####################################/
+        //+++++++++++++++++++++++++++ DISTANCE ++++++++++++++++++++++++++++++++++++/
+        else if (name === 'fuse') {
+          ///////////////////////////FUSE///////////////////////////
+          let result = [];
 
-        examples.forEach((example, index) => {
-          let i = index;
-          let score = fingerprint(2, example['name']);
-          result.push({
-            'choice': example['name'],
-            'index': i,
-            'score': score
-          });
-        });
+          var options = {
+            shouldSort: true,
+            includeScore: true,
+            //threshold: 0.6,
+            keys: [
+              "name"
+            ]
+          };
 
-        result = _.orderBy(result, 'score', ['desc']);
+          var fuseMe = new fuse(examples, options);
 
-        if (searchStr) {
-          let score = fingerprint(2, searchStr);
-          // result.unshift({
-          //   'choice': searchStr,
-          //   'index': 0,
-          //   'score': score
-          // });
-
-          result.unshift(result.splice(result.findIndex(item => item.score === score), 1)[0]);
-        }
-
-        // res.status(200).json({
-        //   success: true,
-        //   message: `FUZZY - CUSTOM invoked successfully for ${name}`,
-        //   payload: result
-        // });
-      }
-      ///////////////////////////NGRAM///////////////////////////
-      //########################### STEMMER ####################################/
-      //+++++++++++++++++++++++++++ DISTANCE ++++++++++++++++++++++++++++++++++++/
-      else if (name === 'fuse') {
-        ///////////////////////////FUSE///////////////////////////
-        let result = [];
-
-        var options = {
-          shouldSort: true,
-          includeScore: true,
-          //threshold: 0.6,
-          keys: [
-            "name"
-          ]
-        };
-
-        var fuseMe = new fuse(examples, options);
-
-        result = fuseMe.search(searchStr);
-        let curated_result = [];
-        result.forEach((item, index) => {
-
-          curated_result.push({
-            'choice': item["item"]["name"],
-            'index': index,
-            'score': item["score"]
-          });
-        });
-
-        // res.status(200).json({
-        //   success: true,
-        //   message: `FUZZY - CUSTOM invoked successfully for ${name}`,
-        //   payload: curated_result
-        // });
-        ///////////////////////////FUSE///////////////////////////
-      } else if (name === 'jarowinkler') {
-        ///////////////////////////JARO WINKLER///////////////////////////
-        let result = [];
-
-        //Iterate over Array of examples
-        if (searchStr) {
-          examples.forEach((example, index) => {
-            let i = index;
-            let score = jaroWinkler(searchStr, example['name']);
-            result.push({
-              'choice': example['name'],
-              'index': i,
-              'score': score
-            });
-          });
-
-          result = _.orderBy(result, 'score', ['desc']);
-        }
-
-        // res.status(200).json({
-        //   success: true,
-        //   message: `FUZZY - CUSTOM invoked successfully for ${name}`,
-        //   payload: result
-        // });
-        ///////////////////////////JARO WINKLER///////////////////////////
-      } else {
-        ///////////////////////////LEVENSHTEIN///////////////////////////
-        options = {
-          scorer: fuzzball.distance,
-          processor: example => example.name
-        };
-
-        fuzzball.extractAsPromised(searchStr, examples, options).then(result => {
+          result = fuseMe.search(searchStr);
           let curated_result = [];
           result.forEach((item, index) => {
+
             curated_result.push({
-              'choice': item[0]["name"],
-              'index': item[2],
-              'score': item[1]
+              'choice': item["item"]["name"],
+              'index': index,
+              'score': item["score"]
             });
           });
+          ///////////////////////////FUSE///////////////////////////
+        } else if (name === 'jarowinkler') {
+          ///////////////////////////JARO WINKLER///////////////////////////
+          score = jaroWinkler(searchStr, example['name']);
+          ///////////////////////////JARO WINKLER///////////////////////////
+        } else {
+          ///////////////////////////LEVENSHTEIN///////////////////////////
+          options = {
+            scorer: fuzzball.distance,
+            processor: example => example.name
+          };
 
-          curated_result = _.orderBy(curated_result, 'score', ['asc']);
+          fuzzball.extractAsPromised(searchStr, examples, options).then(result => {
+            let curated_result = [];
+            result.forEach((item, index) => {
+              curated_result.push({
+                'choice': item[0]["name"],
+                'index': item[2],
+                'score': item[1]
+              });
+            });
 
-          // res.status(200).json({
-          //   success: true,
-          //   message: `FUZZY - CUSTOM invoked successfully for ${name}`,
-          //   payload: curated_result
-          // });
-        });
-        ///////////////////////////LEVENSHTEIN///////////////////////////
-      } // end of if
-      //++++++++++++++++++++++++++++++++ DISTANCE +++++++++++++++++++++++++++++++/
-    }); //end of selectedAlgorithms.forEach
+            curated_result = _.orderBy(curated_result, 'score', ['asc']);
+          });
+          ///////////////////////////LEVENSHTEIN///////////////////////////
+        } // end of if
 
+        results[index][`${name}`] = +score * +weight;
+      }); // end of selectedAlgorithms.forEach
+    }); // end of examples.forEach
+    console.log(`Final Results`);
+    console.log(results);
+
+    res.status(200).json({
+      success: true,
+      message: `FUZZY - CUSTOM invoked successfully for selectedAlgorithms : ${selectedAlgorithms.length}`,
+      payload: results
+    });
   } catch (err) {
     console.log(err);
     res.status(500).json({

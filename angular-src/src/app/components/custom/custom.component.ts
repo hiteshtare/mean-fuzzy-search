@@ -69,15 +69,17 @@ export class CustomComponent implements OnInit {
 
   loadCustomResults() {
     // Default Value
-    const value = typeof (this.computedValue) === 'undefined' ? [{ value: 'fuzzball', text: 2 }] : this.computedValue;
+    this.computedValue = typeof (this.computedValue) === 'undefined' ? [{ value: 'daitchmokotoff', text: '1' }] : this.computedValue;
 
     const options = {
       'searchStr': this.txtSearch,
-      'selectedAlgorithms': value
+      'selectedAlgorithms': this.computedValue
     };
 
     this.fuzzyApiService.getCustomResults(options).subscribe((data) => {
       this.results = data['payload'];
+      console.log(`Results`);
+      console.log(this.results);
     });
   }
 

@@ -61,16 +61,23 @@
   </ng-template>
   <ng-template pTemplate="header">
     <tr>
-      <th>Choice</th>
-      <th>Score</th>
-      <th>Index</th>
+      <th rowspan="2">Choice</th>
+      <th rowspan="2">Index</th>
+      <th [colSpan]="computedValue.length">Score</th>
+    </tr>
+    <tr>
+      <ng-container *ngFor="let comp of computedValue">
+        <th colspan="1">{{comp.value}}</th>
+      </ng-container>
     </tr>
   </ng-template>
   <ng-template pTemplate="body" let-result>
     <tr>
       <td>{{result['choice']}}</td>
-      <td>{{result['score']}}</td>
       <td>{{result['index']}}</td>
+      <ng-container *ngFor="let comp of computedValue">
+        <td>{{result[comp.value]}}</td>
+      </ng-container>
     </tr>
   </ng-template>
 </p-table>
