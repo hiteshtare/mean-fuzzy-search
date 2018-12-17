@@ -29,3 +29,7 @@ button {
 .loader {
   background-color: #c8c8c8;
 }
+
+.form-control:disabled {
+  display: none;
+}

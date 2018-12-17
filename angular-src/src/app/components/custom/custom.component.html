@@ -15,69 +15,48 @@
     </div>
     <div>
       <h3>Choose Phonetic Algorithm :</h3>
-      <div class="ui-g" style="width:700px;margin-bottom:5px">
-        <div class="ui-g-3">
-          <p-radioButton name="rdPhonetics" value="fuzzball" label="FuzzBall - Partial Ratio" [(ngModel)]="selectedPhoneticValue"
-            (ngModelChange)="onTxtSearchChange($event)" inputId="fuzzball"></p-radioButton>
+      <form novalidate [formGroup]="sampleForm">
+        <div class="form-group row" formArrayName="searchAlgorithm">
+          <div class="col-xs-12" *ngFor="let item of langControlMetada; let i = index;">
+            <div [formGroupName]="i">
+              <div class="form-group row">
+                <div class="form-inline" style="margin-left:15px;">
+                  <div class="form-check">
+                    <label [for]="item.checkboxName" class="form-check-label">
+                      <input type="checkbox" class="form-check-input" [id]="item.checkboxName" (change)="languageSelectionChange
+                                          (i, item.checkboxName, item.associateControlName)"
+                        [formControlName]="item.checkboxName"> {{ item.checkboxLabel}}
+                    </label>
+                    <input *ngIf="item.associateControlType == 'textbox'" class="form-control form-control-sm" id="item.associateControlName"
+                      [placeholder]="item.associateControlLabel" maxlength="255" [formControlName]="item.associateControlName" />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
-        <div class="ui-g-3">
-          <p-radioButton name="rdPhonetics" value="daitchmokotoff" label="Daitch Mokotoff" [(ngModel)]="selectedPhoneticValue"
-            (ngModelChange)="onTxtSearchChange($event)" inputId="daitchmokotoff"></p-radioButton>
+        <span *ngIf="missingLanguage" style="color:red">Missing programming language!</span>
+        <hr />
+        <div class="form-group row">
+          <div class="col-xs-12">
+            Form is valid? - {{sampleForm.valid && selectedAlgorithmCount > 0}}
+          </div>
         </div>
-        <div class="ui-g-3">
-          <p-radioButton name="rdPhonetics" value="soundex" label="Soundex" [(ngModel)]="selectedPhoneticValue"
-            (ngModelChange)="onTxtSearchChange($event)" inputId="soundex"></p-radioButton>
+        <div class="form-group row">
+          <div class="col-xs-12">
+            <button class="btn btn-primary" (click)="submit($event)" [disabled]="!sampleForm.valid || selectedAlgorithmCount == 0">
+              Submit
+            </button>
+          </div>
         </div>
-        <div class="ui-g-3">
-          <p-radioButton name="rdPhonetics" value="doublemetaphone" label="Double Metaphone" [(ngModel)]="selectedPhoneticValue"
-            (ngModelChange)="onTxtSearchChange($event)" inputId="doublemetaphone"></p-radioButton>
+        <div class="form-group row">
+          <div class="col-xs-12">
+            Output: {{test | json}}
+          </div>
         </div>
-      </div>
-      <div class="ui-g" style="width:700px;margin-bottom:5px">
-        <div class="ui-g-3">
-          <p-radioButton name="rdPhonetics" value="naturalmetaphone" label="Natural Metaphone" [(ngModel)]="selectedPhoneticValue"
-            (ngModelChange)="onTxtSearchChange($event)" inputId="naturalmetaphone"></p-radioButton>
-        </div>
-        <div class="ui-g-3">
-          <p-radioButton name="rdPhonetics" value="naturalsoundex" label="Natural Soundex" [(ngModel)]="selectedPhoneticValue"
-            (ngModelChange)="onTxtSearchChange($event)" inputId="naturalsoundex"></p-radioButton>
-        </div>
-        <div class="ui-g-3">
-          <p-radioButton name="rdPhonetics" value="symlar" label="Symlar" [(ngModel)]="selectedPhoneticValue"
-            (ngModelChange)="onTxtSearchChange($event)" inputId="symlar"></p-radioButton>
-        </div>
-      </div>
+      </form>
     </div>
-    <div>
-      <h3>Choose Distance/Metrics Algorithm :</h3>
-      <div class="ui-g" style="width:700px;margin-bottom:5px">
-        <div class="ui-g-4">
-          <p-radioButton name="rdPhonetics" value="levenshtein" label="FuzzBall - Levenshtein" [(ngModel)]="selectedPhoneticValue"
-            (ngModelChange)="onTxtSearchChange($event)" inputId="levenshtein"></p-radioButton>
-        </div>
-        <div class="ui-g-4">
-          <p-radioButton name="rdPhonetics" value="jarowinkler" label="Jaro Winkler" [(ngModel)]="selectedPhoneticValue"
-            (ngModelChange)="onTxtSearchChange($event)" inputId="jarowinkler"></p-radioButton>
-        </div>
-        <div class="ui-g-4">
-          <p-radioButton name="rdPhonetics" value="fuse" label="Fuse" [(ngModel)]="selectedPhoneticValue"
-            (ngModelChange)="onTxtSearchChange($event)" inputId="fuse"></p-radioButton>
-        </div>
-      </div>
-    </div>
-    <div>
-      <h3>Choose Stemmer Algorithm :</h3>
-      <div class="ui-g" style="width:700px;margin-bottom:5px">
-        <div class="ui-g-4">
-          <p-radioButton name="rdPhonetics" value="lunr" label="Lunar - Porter Stemmer" [(ngModel)]="selectedPhoneticValue"
-            (ngModelChange)="onTxtSearchChange($event)" inputId="lunr"></p-radioButton>
-        </div>
-        <div class="ui-g-4">
-          <p-radioButton name="rdPhonetics" value="ngram" label="N Gram Fingerprint" [(ngModel)]="selectedPhoneticValue"
-            (ngModelChange)="onTxtSearchChange($event)" inputId="ngram"></p-radioButton>
-        </div>
-      </div>
-    </div>
+
   </p-fieldset>
 </div>
 

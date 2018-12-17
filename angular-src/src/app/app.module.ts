@@ -33,6 +33,7 @@ import { CustomComponent } from './components/custom/custom.component';
     BrowserAnimationsModule,
     HttpClientModule,
     FormsModule,
+    ReactiveFormsModule,
     TableModule,
     ButtonModule,
     InputTextModule,
