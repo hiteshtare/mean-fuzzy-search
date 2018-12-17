@@ -11,6 +11,7 @@ import { AppComponent } from './app.component';
 import { TableModule } from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
+import { InputTextareaModule } from 'primeng/inputtextarea';
 import { CheckboxModule } from 'primeng/checkbox';
 import { RadioButtonModule } from 'primeng/radiobutton';
 import { FieldsetModule } from 'primeng/fieldset';
@@ -37,6 +38,7 @@ import { CustomComponent } from './components/custom/custom.component';
     TableModule,
     ButtonModule,
     InputTextModule,
+    InputTextareaModule,
     CheckboxModule,
     RadioButtonModule,
     FieldsetModule

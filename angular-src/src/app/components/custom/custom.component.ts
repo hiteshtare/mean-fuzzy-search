@@ -19,7 +19,7 @@ export class CustomComponent implements OnInit {
     new Item('FuzzBall - Partial Ratio', 'fuzzball'),
     new Item('Daitch Mokotoff', 'daitchmokotoff'),
     new Item('Soundex', 'soundex'),
-    new Item('Soundex', 'doublemetaphone'),
+    new Item('Double Metaphone', 'doublemetaphone'),
     new Item('Natural Metaphone', 'naturalmetaphone'),
     new Item('Natural Soundex', 'naturalsoundex'),
     new Item('Symlar', 'symlar'),
@@ -133,19 +133,20 @@ export class CustomComponent implements OnInit {
 
     const control = searchAlgorithm.controls[pos] as FormGroup;
 
-    if (control.controls[cnkName].value === true) {
+    const value = control.controls[cnkName].value;
+    if (value.length === 0) {
       // Checkbox checked
-      control.controls[txtName].enable();
-      control.controls[txtName].setValidators([Validators.required]);
-      control.controls[txtName].updateValueAndValidity();
-      this.selectedAlgorithmCount++;
-    } else {
-      // Unchecked
       control.controls[txtName].setValue('');
       control.controls[txtName].disable();
       control.controls[txtName].clearValidators();
       control.controls[txtName].updateValueAndValidity();
       this.selectedAlgorithmCount--;
+    } else {
+      // Unchecked
+      control.controls[txtName].enable();
+      control.controls[txtName].setValidators([Validators.required]);
+      control.controls[txtName].updateValueAndValidity();
+      this.selectedAlgorithmCount++;
     }
   }
 
@@ -170,8 +171,9 @@ export class CustomComponent implements OnInit {
         break;
       }
 
+      const value = control.controls[`${Common.CheckboxPrefix}${languageId}`].value;
       // Capture the selected checkbox Id and textbox value
-      if (control.controls[`${Common.CheckboxPrefix}${languageId}`].value === true) {
+      if (value.length !== 0) {
         selectedLanguage.value = languageId;
         selectedLanguage.text = control.controls[`${Common.OtherPrefix}${languageId}`].value;
         selectedLanguageList.push(selectedLanguage);
