@@ -449,6 +449,7 @@ exports.fuzzy_custom = async (req, res, next) => {
         var score = 0;
         if (name === 'daitchmokotoff') {
           score = daitchMokotoff(example['name']);
+          score = score[0];
         } else if (name === 'doublemetaphone') {
           score = doubleMetaphone(example['name']);
         } else if (name === 'soundex') {
@@ -565,11 +566,26 @@ exports.fuzzy_custom = async (req, res, next) => {
           ///////////////////////////LEVENSHTEIN///////////////////////////
         } // end of if
 
+        // To create dynamic column name with value computed
         results[index][`${name}`] = +score * +weight;
       }); // end of selectedAlgorithms.forEach
     }); // end of examples.forEach
-    console.log(`Final Results`);
-    console.log(results);
+
+    //==============================FINAL SCORE==============================
+    results.forEach((result, index) => {
+      let finalScore = 0;
+      const resultKeys = Object.keys(result);
+
+      resultKeys.forEach((key, index) => {
+        if (key !== "choice" && key !== "index") {
+          finalScore += result[key];
+        }
+      }); // end of  resultKeys.forEach
+
+      results[index][`final_score`] = finalScore;
+    }); // end of results.forEach
+    results = _.orderBy(results, 'final_score', ['desc']);
+    //==============================FINAL SCORE==============================
 
     res.status(200).json({
       success: true,

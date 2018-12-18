@@ -16,13 +16,13 @@ export class CustomComponent implements OnInit {
   sampleForm;
 
   searchAlgorithmList = [
-    new Item('FuzzBall - Partial Ratio', 'fuzzball'),
     new Item('Daitch Mokotoff', 'daitchmokotoff'),
-    new Item('Soundex', 'soundex'),
-    new Item('Double Metaphone', 'doublemetaphone'),
-    new Item('Natural Metaphone', 'naturalmetaphone'),
-    new Item('Natural Soundex', 'naturalsoundex'),
     new Item('Symlar', 'symlar'),
+    new Item('FuzzBall - Partial Ratio', 'fuzzball'),
+    // new Item('Soundex', 'soundex'),
+    // new Item('Double Metaphone', 'doublemetaphone'),
+    // new Item('Natural Metaphone', 'naturalmetaphone'),
+    new Item('Natural Soundex', 'naturalsoundex'),
     new Item('FuzzBall - Levenshtein', 'levenshtein'),
     new Item('Jaro Winkler', 'jarowinkler'),
     new Item('Fuse', 'fuse'),
