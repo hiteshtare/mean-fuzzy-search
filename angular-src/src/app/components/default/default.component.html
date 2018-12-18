@@ -1,17 +1,20 @@
 <div class="content-section introduction">
   <p-fieldset legend="Default">
-    <div>
-      <span class="feature-title">
-        <div class="ui-g" style="margin-bottom:2px">
-          <div class="ui-g-3">
-            <input type="text" placeholder="Search Text" pInputText [(ngModel)]="txtSearch" (ngModelChange)="onTxtSearchChange($event)" />
-          </div>
-          <div class="ui-g-9">
-            <textarea placeholder="Enter Valid JSON" [(ngModel)]='txtAreaJSON' rows="5" cols="100">
-</textarea>
-          </div>
-        </div>
-      </span>
+    <div class="ui-g" style="margin-bottom:2px">
+      <div class="ui-g-3">
+        <span>Choose Custom JSON :</span>
+        <p-radioButton name="rdCustomJson" value="true" label="Yes" [(ngModel)]="selectedCustomJsonValue" inputId="rdcustomjson_yes"></p-radioButton>
+        <p-radioButton name="rdCustomJson" value="false" label="No" [(ngModel)]="selectedCustomJsonValue" inputId="rdcustomjson_no"></p-radioButton>
+      </div>
+      <div class="ui-g-9">
+        <textarea [rows]="5" [cols]="100" [(ngModel)]='txtAreaJSONValue' placeholder="Enter Valid JSON" pInputTextarea
+          autoResize="autoResize"></textarea>
+      </div>
+    </div>
+    <div class="ui-g" style="margin-bottom:2px">
+      <div class="ui-g-3">
+        <input type="text" placeholder="Search Text" pInputText [(ngModel)]="txtSearch" (ngModelChange)="onTxtSearchChange($event)" />
+      </div>
     </div>
     <div>
       <h3>Choose Phonetic Algorithm :</h3>

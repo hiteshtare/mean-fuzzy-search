@@ -36,8 +36,8 @@ export class CustomComponent implements OnInit {
   missingLanguage = false;
   computedValue: any;
 
-  selectedPhoneticValue: string[] = ['levenshtein']; // ['ratio']
-  selectedCustomJsonValue = 'false'; // ['ratio']
+  selectedPhoneticValue: string[] = ['levenshtein'];
+  selectedCustomJsonValue = 'false';
 
   constructor(private fuzzyApiService: FuzzyApiService, private formBuilder: FormBuilder, private customToastService: CustomToastService) {
     this.sampleForm = this.formBuilder.group({
@@ -57,11 +57,11 @@ export class CustomComponent implements OnInit {
     this.loadCustomResults();
   }
 
-  get rapidPageValue() {
+  get txtAreaJSONValue() {
     return JSON.stringify(this.txtAreaJSON, null, 2);
   }
 
-  set rapidPageValue(v) {
+  set txtAreaJSONValue(v) {
     try {
       this.txtAreaJSON = JSON.parse(v);
     } catch (e) {

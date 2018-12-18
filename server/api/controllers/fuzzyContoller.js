@@ -23,10 +23,14 @@ exports.fuzzy_default = async (req, res, next) => {
     console.log(`------------------------FUZZY_DEFAULT------------------------`);
     const searchStr = req.body.searchStr;
     const name = req.body.name;
+    const isCustomJson = req.body.isCustomJson;
+    if (isCustomJson === "true") {
+      examples = req.body.examples;
+    } else {
+      examples = exampleJSON;
+    }
 
     console.log(`Selected : ${name}`);
-
-    examples = exampleJSON;
     /**************************** PHONETIC ************************************/
     ///////////////////////////Daitch Mokotoff///////////////////////////
     if (name === 'daitchmokotoff') {

@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FuzzyApiService } from 'src/app/shared/services/fuzzy-api.service';
+import { CustomToastService } from 'src/app/shared/services/custom-toast.service';
 
 @Component({
   selector: 'app-default',
@@ -12,9 +13,10 @@ export class DefaultComponent implements OnInit {
   txtSearch = '';
   txtAreaJSON = '';
 
-  selectedPhoneticValue: string[] = ['levenshtein']; // ['ratio']
+  selectedPhoneticValue: string[] = ['levenshtein'];
+  selectedCustomJsonValue = 'false';
 
-  constructor(private fuzzyApiService: FuzzyApiService) { }
+  constructor(private fuzzyApiService: FuzzyApiService, private customToastService: CustomToastService) { }
 
   // tslint:disable-next-line:use-life-cycle-interface
   ngOnInit() {
@@ -25,11 +27,11 @@ export class DefaultComponent implements OnInit {
     this.loadDefaultResults();
   }
 
-  get rapidPageValue() {
+  get txtAreaJSONValue() {
     return JSON.stringify(this.txtAreaJSON, null, 2);
   }
 
-  set rapidPageValue(v) {
+  set txtAreaJSONValue(v) {
     try {
       this.txtAreaJSON = JSON.parse(v);
     } catch (e) {
@@ -42,11 +44,16 @@ export class DefaultComponent implements OnInit {
 
     const options = {
       'searchStr': this.txtSearch,
-      'name': value
+      'name': value,
+      'isCustomJson': this.selectedCustomJsonValue,
+      'examples': this.txtAreaJSON
     };
 
     this.fuzzyApiService.getDefaultResults(options).subscribe((data) => {
-      this.results = data['payload'];
+      if (data['success'] === true) {
+        this.customToastService.toastMessage('success', 'Custom Search Complete', data['message']);
+        this.results = data['payload'];
+      }
     });
   }
 }
