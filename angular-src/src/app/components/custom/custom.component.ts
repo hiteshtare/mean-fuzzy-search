@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FuzzyApiService } from 'src/app/shared/services/fuzzy-api.service';
 import { FormBuilder, FormArray, Validators, FormGroup } from '@angular/forms';
+import { CustomToastService } from 'src/app/shared/services/custom-toast.service';
 
 @Component({
   selector: 'app-custom',
@@ -36,8 +37,9 @@ export class CustomComponent implements OnInit {
   computedValue: any;
 
   selectedPhoneticValue: string[] = ['levenshtein']; // ['ratio']
+  selectedCustomJsonValue = 'false'; // ['ratio']
 
-  constructor(private fuzzyApiService: FuzzyApiService, private formBuilder: FormBuilder) {
+  constructor(private fuzzyApiService: FuzzyApiService, private formBuilder: FormBuilder, private customToastService: CustomToastService) {
     this.sampleForm = this.formBuilder.group({
       searchAlgorithm: this.formBuilder.array([{}])
     });
@@ -70,16 +72,18 @@ export class CustomComponent implements OnInit {
   loadCustomResults() {
     // Default Value
     this.computedValue = typeof (this.computedValue) === 'undefined' ? [{ value: 'symlar', text: '1' }] : this.computedValue;
-
     const options = {
       'searchStr': this.txtSearch,
-      'selectedAlgorithms': this.computedValue
+      'selectedAlgorithms': this.computedValue,
+      'isCustomJson': this.selectedCustomJsonValue,
+      'examples': this.txtAreaJSON
     };
 
     this.fuzzyApiService.getCustomResults(options).subscribe((data) => {
-      this.results = data['payload'];
-      console.log(`Results`);
-      console.log(this.results);
+      if (data['success'] === true) {
+        this.customToastService.toastMessage('success', 'Custom Search Complete', data['message']);
+        this.results = data['payload'];
+      }
     });
   }
 

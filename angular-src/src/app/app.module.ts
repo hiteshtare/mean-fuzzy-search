@@ -15,12 +15,15 @@ import { InputTextareaModule } from 'primeng/inputtextarea';
 import { CheckboxModule } from 'primeng/checkbox';
 import { RadioButtonModule } from 'primeng/radiobutton';
 import { FieldsetModule } from 'primeng/fieldset';
+import { ToastModule } from 'primeng/toast';
+import { MessageService } from 'primeng/components/common/messageservice';
 // PrimeNG Modules
 
 import { FuzzyApiService } from './shared/services/fuzzy-api.service';
 import { DefaultComponent } from './components/default/default.component';
 import { CustomComponent } from './components/custom/custom.component';
 import { NumberOnlyDirective } from './shared/directives/number-only.directive';
+import { CustomToastService } from './shared/services/custom-toast.service';
 
 
 @NgModule({
@@ -43,9 +46,10 @@ import { NumberOnlyDirective } from './shared/directives/number-only.directive';
     InputTextareaModule,
     CheckboxModule,
     RadioButtonModule,
-    FieldsetModule
+    FieldsetModule,
+    ToastModule
   ],
-  providers: [FuzzyApiService],
+  providers: [FuzzyApiService, MessageService, CustomToastService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
