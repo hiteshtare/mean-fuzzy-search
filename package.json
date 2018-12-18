@@ -4,7 +4,7 @@
   "description": "Fuzzy Search implementation",
   "main": "./server/server.js",
   "scripts": {
-    "test": "echo 'Node Fuzzy Search app'",
+    "test": "echo 'Node Fuzzy Search application'",
     "start": "node ./server/server.js",
     "heroku-prebuild": "echo This runs before Heroku installs your dependencies.",
     "heroku-postbuild": "echo This runs afterwards.",
