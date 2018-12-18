@@ -447,6 +447,7 @@ exports.fuzzy_custom = async (req, res, next) => {
         };
 
         var score = 0;
+        var searchStr_score = '';
         if (name === 'daitchmokotoff') {
           score = daitchMokotoff(example['name']);
           score = score[0];
@@ -456,10 +457,18 @@ exports.fuzzy_custom = async (req, res, next) => {
           score = soundex(example['name']);
         } else if (name === 'naturalmetaphone') {
           var metaphone = natural.Metaphone;
-          score = metaphone.process(example['name']);
-        } else if (name === 'naturalmetaphone') {
+          e_score = metaphone.process(example['name']);
+          if (searchStr) {
+            searchStr_score = metaphone.process(searchStr);
+          }
+          score = e_score === searchStr_score ? 1 : 0;
+        } else if (name === 'naturalsoundex') {
           var metaphone = natural.SoundEx;
-          score = metaphone.process(example['name']);
+          e_score = metaphone.process(example['name']);
+          if (searchStr) {
+            searchStr_score = metaphone.process(searchStr);
+          }
+          score = e_score === searchStr_score ? 1 : 0;
         } else if (name === 'symlar') {
           score = symlar.phonesim(searchStr, example['name']);
         } else if (name === 'fuzzball') {
@@ -566,8 +575,13 @@ exports.fuzzy_custom = async (req, res, next) => {
           ///////////////////////////LEVENSHTEIN///////////////////////////
         } // end of if
 
-        // To create dynamic column name with value computed
-        results[index][`${name}`] = +score * +weight;
+        if (name === "soundex" || name === "doublemetaphone" || name === "ngram")
+          results[index][`${name}`] = score;
+        else {
+          // To create dynamic column name with value computed
+          results[index][`${name}`] = +score * +weight;
+        }
+
       }); // end of selectedAlgorithms.forEach
     }); // end of examples.forEach
 
@@ -577,7 +591,7 @@ exports.fuzzy_custom = async (req, res, next) => {
       const resultKeys = Object.keys(result);
 
       resultKeys.forEach((key, index) => {
-        if (key !== "choice" && key !== "index") {
+        if (key !== "choice" && key !== "index" && key !== "soundex" && key !== "doublemetaphone" && key !== "ngram") {
           finalScore += result[key];
         }
       }); // end of  resultKeys.forEach

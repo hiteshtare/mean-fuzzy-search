@@ -16,18 +16,18 @@ export class CustomComponent implements OnInit {
   sampleForm;
 
   searchAlgorithmList = [
-    new Item('Daitch Mokotoff', 'daitchmokotoff'),
+    // new Item('Daitch Mokotoff', 'daitchmokotoff'),
     new Item('Symlar', 'symlar'),
-    new Item('FuzzBall - Partial Ratio', 'fuzzball'),
     // new Item('Soundex', 'soundex'),
     // new Item('Double Metaphone', 'doublemetaphone'),
-    // new Item('Natural Metaphone', 'naturalmetaphone'),
+    new Item('Natural Metaphone', 'naturalmetaphone'),
     new Item('Natural Soundex', 'naturalsoundex'),
-    new Item('FuzzBall - Levenshtein', 'levenshtein'),
+    // new Item('N Gram Fingerprint', 'ngram'),
     new Item('Jaro Winkler', 'jarowinkler'),
+    new Item('FuzzBall - Levenshtein', 'levenshtein'),
+    new Item('FuzzBall - Partial Ratio', 'fuzzball'),
     new Item('Fuse', 'fuse'),
-    new Item('Lunar - Porter Stemmer', 'lunr'),
-    new Item('N Gram Fingerprint', 'ngram')
+    new Item('Lunar - Porter Stemmer', 'lunr')
   ];
   searchAlgorithmFormArray;
   langControlMetada: Array<FormControlMetadata> = [];
@@ -69,7 +69,7 @@ export class CustomComponent implements OnInit {
 
   loadCustomResults() {
     // Default Value
-    this.computedValue = typeof (this.computedValue) === 'undefined' ? [{ value: 'daitchmokotoff', text: '1' }] : this.computedValue;
+    this.computedValue = typeof (this.computedValue) === 'undefined' ? [{ value: 'symlar', text: '1' }] : this.computedValue;
 
     const options = {
       'searchStr': this.txtSearch,
@@ -143,6 +143,7 @@ export class CustomComponent implements OnInit {
       control.associateControlName = `${Common.OtherPrefix}${p.value}`;
       // control.associateControlLabel = `${p.text} weightage`;
       control.associateControlLabel = `Weightage (0-1)`;
+      control.associateControlValue = 1;
       control.associateControlType = Common.ControlType[Common.ControlType.textbox];
 
       // Store in array, use by html to loop through
@@ -207,6 +208,7 @@ class FormControlMetadata {
   public checkboxLabel: string;
   public associateControlName: string;
   public associateControlLabel: string;
+  public associateControlValue: number;
   public associateControlType: string;
   public associateControlData: Array<Item>;
 
