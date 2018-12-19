@@ -241,25 +241,27 @@ exports.fuzzy_default = async (req, res, next) => {
       ///////////////////////////SYMLAR///////////////////////////
     } else if (name === "fuzzball") {
       ///////////////////////////Fuzzball  Partial_Ratio///////////////////////////
-      options = {
-        scorer: fuzzball.partial_ratio,
-        processor: example => example.name
-      };
+      let result = [];
 
-      fuzzball.extractAsPromised(searchStr, examples, options).then(result => {
-        let curated_result = [];
-        result.forEach((item, index) => {
-          curated_result.push({
-            'choice': item[0]["name"],
-            'index': item[2],
-            'score': item[1]
+      //Iterate over Array of examples
+      if (searchStr) {
+        examples.forEach((example, index) => {
+          let i = index;
+          let score = fuzzball.partial_ratio(searchStr, example['name']);
+          result.push({
+            'choice': example['name'],
+            'index': i,
+            'score': score
           });
         });
-        res.status(200).json({
-          success: true,
-          message: `FUZZY - DEFAULT invoked successfully for ${name}`,
-          payload: curated_result
-        });
+
+        result = _.orderBy(result, 'score', ['desc']);
+      }
+
+      res.status(200).json({
+        success: true,
+        message: `FUZZY - DEFAULT invoked successfully for ${name}`,
+        payload: result
       });
       ///////////////////////////Fuzzball  Partial_Ratio///////////////////////////
     }
@@ -480,21 +482,7 @@ exports.fuzzy_custom = async (req, res, next) => {
           } else if (name === 'symlar') {
             score = symlar.phonesim(searchStr, example['name']);
           } else if (name === 'fuzzball') {
-            options = {
-              scorer: fuzzball.partial_ratio,
-              processor: example => example.name
-            };
-
-            fuzzball.extractAsPromised(searchStr, examples, options).then(result => {
-              let curated_result = [];
-              result.forEach((item, index) => {
-                curated_result.push({
-                  'choice': item[0]["name"],
-                  'index': item[2],
-                  'score': item[1]
-                });
-              });
-            });
+            score = fuzzball.partial_ratio(searchStr, example['name']);
           } else if (name === 'lunr') {
             let curated_result = [];
             var result = [];
