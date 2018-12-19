@@ -54,6 +54,7 @@
     "soundex": "^0.2.1",
     "symlar": "^1.1.6",
     "talisman": "^0.21.0",
-    "thinker-fts": "^1.2.0"
+    "thinker-fts": "^1.2.0",
+    "wuzzy": "^0.1.3"
   }
 }

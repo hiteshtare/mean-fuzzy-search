@@ -11,6 +11,7 @@ export class DefaultComponent implements OnInit {
 
   results;
   txtSearch = '';
+  txtNgramSize = '2';
   txtAreaJSON = '';
 
   selectedPhoneticValue: string[] = ['levenshtein'];
@@ -44,6 +45,7 @@ export class DefaultComponent implements OnInit {
 
     const options = {
       'searchStr': this.txtSearch,
+      'ngramSize': this.txtNgramSize,
       'name': value,
       'isCustomJson': this.selectedCustomJsonValue,
       'examples': this.txtAreaJSON

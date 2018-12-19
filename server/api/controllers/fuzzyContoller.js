@@ -13,6 +13,9 @@ const lunr = require('lunr');
 // const Thinker = require('thinker-fts');
 const fingerprint = require('ngram-fingerprint')
 
+const wuzzy = require('wuzzy');
+
+
 const _ = require("lodash");
 const path = require('path');
 
@@ -23,7 +26,8 @@ exports.fuzzy_default = async (req, res, next) => {
     console.log(`------------------------FUZZY_DEFAULT------------------------`);
     const searchStr = req.body.searchStr;
     const name = req.body.name;
-    const isCustomJson = req.body.isCustomJson;
+    const isCustomJson = req.body.isCustomJson
+    const ngramSize = req.body.ngramSize;
     if (isCustomJson === "true") {
       examples = req.body.examples;
     } else {
@@ -299,34 +303,25 @@ exports.fuzzy_default = async (req, res, next) => {
       });
     } else if (name === 'ngram') {
       ///////////////////////////NGRAM///////////////////////////
-      var result = [];
-
-      examples.forEach((example, index) => {
-        let i = index;
-        let score = fingerprint(2, example['name']);
-        result.push({
-          'choice': example['name'],
-          'index': i,
-          'score': score
-        });
-      });
-
-      result = _.orderBy(result, 'score', ['desc']);
-
+      let result = [];
+      //Iterate over Array of examples
       if (searchStr) {
-        let score = fingerprint(2, searchStr);
-        // result.unshift({
-        //   'choice': searchStr,
-        //   'index': 0,
-        //   'score': score
-        // });
+        examples.forEach((example, index) => {
+          let i = index;
+          let score = wuzzy.ngram(searchStr, example['name'], ngramSize);
+          result.push({
+            'choice': example['name'],
+            'index': i,
+            'score': score
+          });
+        });
 
-        result.unshift(result.splice(result.findIndex(item => item.score === score), 1)[0]);
+        result = _.orderBy(result, 'score', ['desc']);
       }
 
       res.status(200).json({
         success: true,
-        message: `FUZZY - DEFAULT invoked successfully for ${name}`,
+        message: `FUZZY - DEFAULT invoked successfully for ${name} >> ngramSize : ${ngramSize}`,
         payload: result
       });
     }
@@ -392,28 +387,27 @@ exports.fuzzy_default = async (req, res, next) => {
       ///////////////////////////JARO WINKLER///////////////////////////
     } else {
       ///////////////////////////LEVENSHTEIN///////////////////////////
-      options = {
-        scorer: fuzzball.distance,
-        processor: example => example.name
-      };
+      let result = [];
 
-      fuzzball.extractAsPromised(searchStr, examples, options).then(result => {
-        let curated_result = [];
-        result.forEach((item, index) => {
-          curated_result.push({
-            'choice': item[0]["name"],
-            'index': item[2],
-            'score': item[1]
+      //Iterate over Array of examples
+      if (searchStr) {
+        examples.forEach((example, index) => {
+          let i = index;
+          let score = wuzzy.levenshtein(searchStr, example['name']);
+          result.push({
+            'choice': example['name'],
+            'index': i,
+            'score': score
           });
         });
 
-        curated_result = _.orderBy(curated_result, 'score', ['asc']);
+        result = _.orderBy(result, 'score', ['desc']);
+      }
 
-        res.status(200).json({
-          success: true,
-          message: `FUZZY - DEFAULT invoked successfully for ${name}`,
-          payload: curated_result
-        });
+      res.status(200).json({
+        success: true,
+        message: `FUZZY - DEFAULT invoked successfully for ${name}`,
+        payload: result
       });
       ///////////////////////////LEVENSHTEIN///////////////////////////
     } // end of if
@@ -435,6 +429,8 @@ exports.fuzzy_custom = async (req, res, next) => {
     const searchStr = req.body.searchStr;
     const selectedAlgorithms = req.body.selectedAlgorithms;
     const isCustomJson = req.body.isCustomJson;
+    const ngramSize = req.body.ngramSize;
+
     if (isCustomJson === "true") {
       examples = req.body.examples;
     } else {
@@ -530,7 +526,7 @@ exports.fuzzy_custom = async (req, res, next) => {
 
           } else if (name === 'ngram') {
             ///////////////////////////NGRAM///////////////////////////
-            score = fingerprint(2, example['name']);
+            score = wuzzy.ngram(searchStr, example['name'], ngramSize);
           }
           ///////////////////////////NGRAM///////////////////////////
           //########################### STEMMER ####################################/
@@ -567,27 +563,11 @@ exports.fuzzy_custom = async (req, res, next) => {
             ///////////////////////////JARO WINKLER///////////////////////////
           } else {
             ///////////////////////////LEVENSHTEIN///////////////////////////
-            options = {
-              scorer: fuzzball.distance,
-              processor: example => example.name
-            };
-
-            fuzzball.extractAsPromised(searchStr, examples, options).then(result => {
-              let curated_result = [];
-              result.forEach((item, index) => {
-                curated_result.push({
-                  'choice': item[0]["name"],
-                  'index': item[2],
-                  'score': item[1]
-                });
-              });
-
-              curated_result = _.orderBy(curated_result, 'score', ['asc']);
-            });
+            score = wuzzy.levenshtein(searchStr, example['name']);
             ///////////////////////////LEVENSHTEIN///////////////////////////
           } // end of if
 
-          if (name === "soundex" || name === "doublemetaphone" || name === "ngram")
+          if (name === "soundex" || name === "doublemetaphone")
             results[index][`${name}`] = score;
           else {
             // To create dynamic column name with value computed
@@ -603,7 +583,7 @@ exports.fuzzy_custom = async (req, res, next) => {
         const resultKeys = Object.keys(result);
 
         resultKeys.forEach((key, index) => {
-          if (key !== "choice" && key !== "index" && key !== "soundex" && key !== "doublemetaphone" && key !== "ngram") {
+          if (key !== "choice" && key !== "index" && key !== "soundex" && key !== "doublemetaphone") {
             finalScore += result[key];
           }
         }); // end of  resultKeys.forEach

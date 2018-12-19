@@ -13,7 +13,14 @@
     </div>
     <div class="ui-g" style="margin-bottom:2px">
       <div class="ui-g-3">
+        <span>Search Box : </span>
         <input type="text" placeholder="Search Text" pInputText [(ngModel)]="txtSearch" (ngModelChange)="onTxtSearchChange($event)" />
+      </div>
+    </div>
+    <div class="ui-g" style="margin-bottom:2px">
+      <div class="ui-g-3">
+        <span>ngram Size : </span>
+        <input type="text" placeholder="ngram Size" pInputText [(ngModel)]="txtNgramSize" (ngModelChange)="onTxtSearchChange($event)" />
       </div>
     </div>
     <div>
@@ -55,7 +62,7 @@
       <h3>Choose Distance/Metrics Algorithm :</h3>
       <div class="ui-g" style="width:700px;margin-bottom:5px">
         <div class="ui-g-4">
-          <p-radioButton name="rdPhonetics" value="levenshtein" label="FuzzBall - Levenshtein" [(ngModel)]="selectedPhoneticValue"
+          <p-radioButton name="rdPhonetics" value="levenshtein" label="Wuzzy - Levenshtein" [(ngModel)]="selectedPhoneticValue"
             (ngModelChange)="onTxtSearchChange($event)" inputId="levenshtein"></p-radioButton>
         </div>
         <div class="ui-g-4">
@@ -76,7 +83,7 @@
             (ngModelChange)="onTxtSearchChange($event)" inputId="lunr"></p-radioButton>
         </div>
         <div class="ui-g-4">
-          <p-radioButton name="rdPhonetics" value="ngram" label="N Gram Fingerprint" [(ngModel)]="selectedPhoneticValue"
+          <p-radioButton name="rdPhonetics" value="ngram" label="Wuzzy - ngram" [(ngModel)]="selectedPhoneticValue"
             (ngModelChange)="onTxtSearchChange($event)" inputId="ngram"></p-radioButton>
         </div>
       </div>

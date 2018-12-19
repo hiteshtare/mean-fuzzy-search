@@ -13,6 +13,7 @@ export class CustomComponent implements OnInit {
 
   results;
   txtSearch = '';
+  txtNgramSize = '2';
   txtAreaJSON = '';
   sampleForm;
 
@@ -23,9 +24,9 @@ export class CustomComponent implements OnInit {
     // new Item('Double Metaphone', 'doublemetaphone'),
     new Item('Natural Metaphone', 'naturalmetaphone'),
     new Item('Natural Soundex', 'naturalsoundex'),
-    // new Item('N Gram Fingerprint', 'ngram'),
     new Item('Jaro Winkler', 'jarowinkler'),
-    new Item('FuzzBall - Levenshtein', 'levenshtein'),
+    new Item('Wuzzy - Levenshtein', 'levenshtein'),
+    new Item('Wuzzy - ngram', 'ngram'),
     new Item('FuzzBall - Partial Ratio', 'fuzzball'),
     new Item('Fuse', 'fuse'),
     new Item('Lunar - Porter Stemmer', 'lunr')
@@ -73,6 +74,7 @@ export class CustomComponent implements OnInit {
     // Default Value
     this.computedValue = typeof (this.computedValue) === 'undefined' ? [{ value: 'symlar', text: '1' }] : this.computedValue;
     const options = {
+      'ngramSize': this.txtNgramSize,
       'searchStr': this.txtSearch,
       'selectedAlgorithms': this.computedValue,
       'isCustomJson': this.selectedCustomJsonValue,
