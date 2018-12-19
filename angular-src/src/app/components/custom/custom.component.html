@@ -24,7 +24,8 @@
       </div>
     </div>
     <div>
-      <h3>Choose Phonetic Algorithm :</h3>
+      <h5 style="color: lime;">Note : By default, Symlar is applied with weightage of 1</h5>
+      <h3>Choose Combinations of Phonetic Algorithms :</h3>
       <form novalidate [formGroup]="sampleForm">
         <div class="form-group row" formArrayName="searchAlgorithm">
           <div class="col-xs-12" *ngFor="let item of langControlMetada; let i = index;">

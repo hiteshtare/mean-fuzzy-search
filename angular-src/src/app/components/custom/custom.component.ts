@@ -27,9 +27,9 @@ export class CustomComponent implements OnInit {
     new Item('Jaro Winkler', 'jarowinkler'),
     new Item('Wuzzy - Levenshtein', 'levenshtein'),
     new Item('Wuzzy - ngram', 'ngram'),
-    new Item('FuzzBall - Partial Ratio', 'fuzzball'),
-    new Item('Fuse', 'fuse'),
-    new Item('Lunar - Porter Stemmer', 'lunr')
+    new Item('FuzzBall - Partial Ratio', 'fuzzball')
+    // new Item('Fuse', 'fuse'),
+    // new Item('Lunar - Porter Stemmer', 'lunr')
   ];
   searchAlgorithmFormArray;
   langControlMetada: Array<FormControlMetadata> = [];
@@ -37,7 +37,6 @@ export class CustomComponent implements OnInit {
   missingLanguage = false;
   computedValue: any;
 
-  selectedPhoneticValue: string[] = ['levenshtein'];
   selectedCustomJsonValue = 'false';
 
   constructor(private fuzzyApiService: FuzzyApiService, private formBuilder: FormBuilder, private customToastService: CustomToastService) {
