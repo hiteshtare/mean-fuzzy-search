@@ -16,6 +16,7 @@ app.use(bodyParser.urlencoded({ // Body Parser
   extended: false
 }));
 app.use(bodyParser.json());
+app.use(cors()); //Cors (CROSS-ORIGIN RESOURCE SHARING) Middleware
 
 //Host static files
 app.use(express.static(path.join(__dirname, 'public')));
