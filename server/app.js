@@ -2,6 +2,7 @@
 const express = require('express');
 const morgan = require('morgan');
 const bodyParser = require('body-parser');
+const cors = require('cors');
 const path = require('path');
 
 //Initialize express app
@@ -21,19 +22,6 @@ app.use(cors()); //Cors (CROSS-ORIGIN RESOURCE SHARING) Middleware
 //Host static files
 app.use(express.static(path.join(__dirname, 'public')));
 
-//Cross Origin Resource Scripting
-app.use((req, res, next) => {
-  res.header("Access-Control-Allow-Origin", "*");
-  res.header(
-    "Access-Control-Allow-Headers",
-    "Origin, X-Requested-With, Content-Type, Accept, Authorization"
-  );
-  if (req.method === "OPTIONS") {
-    res.header("Access-Control-Allow-Methods", "PUT, POST, PATCH, DELETE, GET");
-    return res.status(200).json({});
-  }
-  next();
-});
 // Routes which should handle requests
 app.use("/fuzzy", fuzzyRoute);
 
