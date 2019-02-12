@@ -14,6 +14,7 @@ export class CustomComponent implements OnInit {
   results;
   txtSearch = '';
   txtNgramSize = '2';
+  txtThresholdValue = '10';
   txtAreaJSON = '';
   sampleForm;
 
@@ -74,6 +75,7 @@ export class CustomComponent implements OnInit {
     this.computedValue = typeof (this.computedValue) === 'undefined' ? [{ value: 'symlar', text: '1' }] : this.computedValue;
     const options = {
       'ngramSize': this.txtNgramSize,
+      'thresholdValue': this.txtThresholdValue,
       'searchStr': this.txtSearch,
       'selectedAlgorithms': this.computedValue,
       'isCustomJson': this.selectedCustomJsonValue,

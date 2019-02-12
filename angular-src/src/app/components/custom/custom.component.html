@@ -22,9 +22,16 @@
         <span>ngram Size : </span>
         <input type="text" placeholder="ngram Size" pInputText [(ngModel)]="txtNgramSize" (ngModelChange)="onTxtSearchChange($event)" />
       </div>
+      <h5 style="color: lime;">Note : By default, Symlar is applied with weightage of 1</h5>
+    </div>
+    <div class="ui-g" style="margin-bottom:2px">
+      <div class="ui-g-3">
+        <span>Threshold : </span>
+        <input type="text" placeholder="Threshold Value" pInputText [(ngModel)]="txtThresholdValue" (ngModelChange)="onTxtSearchChange($event)" />
+      </div>
+      <h5 style="color: lime;">Note : By default, Threshold is applied with a value Top 10</h5>
     </div>
     <div>
-      <h5 style="color: lime;">Note : By default, Symlar is applied with weightage of 1</h5>
       <h3>Choose Combinations of Phonetic Algorithms :</h3>
       <form novalidate [formGroup]="sampleForm">
         <div class="form-group row" formArrayName="searchAlgorithm">

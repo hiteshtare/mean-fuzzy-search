@@ -20,6 +20,7 @@ const _ = require("lodash");
 const path = require('path');
 
 var exampleJSON = require('../../assets/example_subjects.json');
+//var exampleJSON = require('../../assets/qa_names.json');
 
 exports.fuzzy_default = async (req, res, next) => {
   try {
@@ -28,6 +29,8 @@ exports.fuzzy_default = async (req, res, next) => {
     const name = req.body.name;
     const isCustomJson = req.body.isCustomJson
     const ngramSize = req.body.ngramSize;
+    const thresholdValue = req.body.thresholdValue;
+
     if (isCustomJson === "true") {
       examples = req.body.examples;
     } else {
@@ -66,6 +69,12 @@ exports.fuzzy_default = async (req, res, next) => {
         }), 1)[0]);
       }
 
+      // Split into groups the length of size
+      const threshold_results = _.chunk(result, +thresholdValue);
+      if (threshold_results) {
+        result = threshold_results[0];
+      }
+
       res.status(200).json({
         success: true,
         message: `FUZZY - DEFAULT invoked successfully for ${name}`,
@@ -100,6 +109,12 @@ exports.fuzzy_default = async (req, res, next) => {
         result.unshift(result.splice(result.findIndex((item) => {
           return _.isEqual(item.score.sort(), score.sort());
         }), 1)[0]);
+
+        // Split into groups the length of size
+        const threshold_results = _.chunk(result, +thresholdValue);
+        if (threshold_results) {
+          result = threshold_results[0];
+        }
       }
 
       res.status(200).json({
@@ -134,6 +149,12 @@ exports.fuzzy_default = async (req, res, next) => {
         // });
 
         result.unshift(result.splice(result.findIndex(item => item.score === score), 1)[0]);
+
+        // Split into groups the length of size
+        const threshold_results = _.chunk(result, +thresholdValue);
+        if (threshold_results) {
+          result = threshold_results[0];
+        }
       }
 
       res.status(200).json({
@@ -170,6 +191,12 @@ exports.fuzzy_default = async (req, res, next) => {
         // });
 
         result.unshift(result.splice(result.findIndex(item => item.score === score), 1)[0]);
+
+        // Split into groups the length of size
+        const threshold_results = _.chunk(result, +thresholdValue);
+        if (threshold_results) {
+          result = threshold_results[0];
+        }
       }
 
       res.status(200).json({
@@ -206,6 +233,12 @@ exports.fuzzy_default = async (req, res, next) => {
         // });
 
         result.unshift(result.splice(result.findIndex(item => item.score === score), 1)[0]);
+
+        // Split into groups the length of size
+        const threshold_results = _.chunk(result, +thresholdValue);
+        if (threshold_results) {
+          result = threshold_results[0];
+        }
       }
 
       res.status(200).json({
@@ -231,6 +264,12 @@ exports.fuzzy_default = async (req, res, next) => {
         });
 
         result = _.orderBy(result, 'score', ['desc']);
+
+        // Split into groups the length of size
+        const threshold_results = _.chunk(result, +thresholdValue);
+        if (threshold_results) {
+          result = threshold_results[0];
+        }
       }
 
       res.status(200).json({
@@ -256,6 +295,12 @@ exports.fuzzy_default = async (req, res, next) => {
         });
 
         result = _.orderBy(result, 'score', ['desc']);
+
+        // Split into groups the length of size
+        const threshold_results = _.chunk(result, +thresholdValue);
+        if (threshold_results) {
+          result = threshold_results[0];
+        }
       }
 
       res.status(200).json({
@@ -297,6 +342,11 @@ exports.fuzzy_default = async (req, res, next) => {
 
       curated_result = _.orderBy(curated_result, 'score', ['desc']);
 
+      // Split into groups the length of size
+      const threshold_results = _.chunk(curated_result, +thresholdValue);
+      if (threshold_results) {
+        curated_result = threshold_results[0];
+      }
 
       res.status(200).json({
         success: true,
@@ -319,6 +369,12 @@ exports.fuzzy_default = async (req, res, next) => {
         });
 
         result = _.orderBy(result, 'score', ['desc']);
+
+        // Split into groups the length of size
+        const threshold_results = _.chunk(result, +thresholdValue);
+        if (threshold_results) {
+          result = threshold_results[0];
+        }
       }
 
       res.status(200).json({
@@ -356,6 +412,12 @@ exports.fuzzy_default = async (req, res, next) => {
         });
       });
 
+      // Split into groups the length of size
+      const threshold_results = _.chunk(curated_result, +thresholdValue);
+      if (threshold_results) {
+        curated_result = threshold_results[0];
+      }
+
       res.status(200).json({
         success: true,
         message: `FUZZY - DEFAULT invoked successfully for ${name}`,
@@ -379,6 +441,12 @@ exports.fuzzy_default = async (req, res, next) => {
         });
 
         result = _.orderBy(result, 'score', ['desc']);
+
+        // Split into groups the length of size
+        const threshold_results = _.chunk(result, +thresholdValue);
+        if (threshold_results) {
+          result = threshold_results[0];
+        }
       }
 
       res.status(200).json({
@@ -404,6 +472,12 @@ exports.fuzzy_default = async (req, res, next) => {
         });
 
         result = _.orderBy(result, 'score', ['desc']);
+
+        // Split into groups the length of size
+        const threshold_results = _.chunk(result, +thresholdValue);
+        if (threshold_results) {
+          result = threshold_results[0];
+        }
       }
 
       res.status(200).json({
@@ -432,6 +506,7 @@ exports.fuzzy_custom = async (req, res, next) => {
     const selectedAlgorithms = req.body.selectedAlgorithms;
     const isCustomJson = req.body.isCustomJson;
     const ngramSize = req.body.ngramSize;
+    const thresholdValue = req.body.thresholdValue;
 
     if (isCustomJson === "true") {
       examples = req.body.examples;
@@ -578,7 +653,15 @@ exports.fuzzy_custom = async (req, res, next) => {
 
         results[index][`final_score`] = finalScore;
       }); // end of results.forEach
+
+      // Sorting the results by final score desc
       results = _.orderBy(results, 'final_score', ['desc']);
+
+      // Split into groups the length of size
+      const threshold_results = _.chunk(results, +thresholdValue);
+      if (threshold_results) {
+        results = threshold_results[0];
+      }
       //==============================FINAL SCORE==============================
       res.status(200).json({
         success: true,
