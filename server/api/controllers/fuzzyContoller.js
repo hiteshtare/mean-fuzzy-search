@@ -19,8 +19,8 @@ const wuzzy = require('wuzzy');
 const _ = require("lodash");
 const path = require('path');
 
-var exampleJSON = require('../../assets/example_subjects.json');
-//var exampleJSON = require('../../assets/qa_names.json');
+// var exampleJSON = require('../../assets/example_subjects.json');
+var exampleJSON = require('../../assets/qa_names.json');
 
 exports.fuzzy_default = async (req, res, next) => {
   try {
