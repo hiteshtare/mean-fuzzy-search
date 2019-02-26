@@ -14,20 +14,20 @@
     <div class="ui-g" style="margin-bottom:2px">
       <div class="ui-g-3">
         <span>Search Box : </span>
-        <input type="text" placeholder="Search Text" pInputText [(ngModel)]="txtSearch" (ngModelChange)="onTxtSearchChange($event)" />
+        <input type="text" placeholder="Search Text" pInputText [(ngModel)]="txtSearch" />
       </div>
     </div>
     <div class="ui-g" style="margin-bottom:2px">
       <div class="ui-g-3">
         <span>ngram Size : </span>
-        <input type="text" placeholder="ngram Size" pInputText [(ngModel)]="txtNgramSize" (ngModelChange)="onTxtSearchChange($event)" />
+        <input type="text" placeholder="ngram Size" pInputText [(ngModel)]="txtNgramSize" />
       </div>
       <h5 style="color: lime;">Note : By default, Symlar is applied with weightage of 1</h5>
     </div>
     <div class="ui-g" style="margin-bottom:2px">
       <div class="ui-g-3">
         <span>Threshold : </span>
-        <input type="text" placeholder="Threshold Value" pInputText [(ngModel)]="txtThresholdValue" (ngModelChange)="onTxtSearchChange($event)" />
+        <input type="text" placeholder="Threshold Value" pInputText [(ngModel)]="txtThresholdValue" />
       </div>
       <h5 style="color: lime;">Note : By default, Threshold is applied with a value 0</h5>
     </div>
