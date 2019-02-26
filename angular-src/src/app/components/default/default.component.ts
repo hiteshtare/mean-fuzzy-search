@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FuzzyApiService } from 'src/app/shared/services/fuzzy-api.service';
 import { CustomToastService } from 'src/app/shared/services/custom-toast.service';
+import { NgxSpinnerService } from 'ngx-spinner';
 
 @Component({
   selector: 'app-default',
@@ -12,13 +13,14 @@ export class DefaultComponent implements OnInit {
   results;
   txtSearch = '';
   txtNgramSize = '2';
-  txtThresholdValue = '10';
+  txtThresholdValue = '0';
   txtAreaJSON = '';
 
-  selectedPhoneticValue: string[] = ['levenshtein'];
+  selectedPhoneticValue: string[] = ['symlar'];
   selectedCustomJsonValue = 'false';
 
-  constructor(private fuzzyApiService: FuzzyApiService, private customToastService: CustomToastService) { }
+  constructor(private fuzzyApiService: FuzzyApiService, private customToastService: CustomToastService
+    , private spinner: NgxSpinnerService) { }
 
   // tslint:disable-next-line:use-life-cycle-interface
   ngOnInit() {
@@ -42,7 +44,9 @@ export class DefaultComponent implements OnInit {
   }
 
   loadDefaultResults() {
-    const value = this.selectedPhoneticValue[0] === '' ? 'fuzzball' : this.selectedPhoneticValue;
+    this.spinner.show();
+
+    const value = this.selectedPhoneticValue[0] === 'symlar' ? 'symlar' : this.selectedPhoneticValue;
 
     const options = {
       'searchStr': this.txtSearch,
@@ -57,6 +61,7 @@ export class DefaultComponent implements OnInit {
       if (data['success'] === true) {
         this.customToastService.toastMessage('success', 'Custom Search Complete', data['message']);
         this.results = data['payload'];
+        this.spinner.hide();
       }
     });
   }

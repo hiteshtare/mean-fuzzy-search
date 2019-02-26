@@ -14,7 +14,7 @@ export class CustomComponent implements OnInit {
   results;
   txtSearch = '';
   txtNgramSize = '2';
-  txtThresholdValue = '10';
+  txtThresholdValue = '0';
   txtAreaJSON = '';
   sampleForm;
 

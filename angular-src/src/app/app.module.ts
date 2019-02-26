@@ -19,6 +19,8 @@ import { ToastModule } from 'primeng/toast';
 import { MessageService } from 'primeng/components/common/messageservice';
 // PrimeNG Modules
 
+import { NgxSpinnerModule } from 'ngx-spinner'; // Spinner Module
+
 import { FuzzyApiService } from './shared/services/fuzzy-api.service';
 import { DefaultComponent } from './components/default/default.component';
 import { CustomComponent } from './components/custom/custom.component';
@@ -47,7 +49,8 @@ import { CustomToastService } from './shared/services/custom-toast.service';
     CheckboxModule,
     RadioButtonModule,
     FieldsetModule,
-    ToastModule
+    ToastModule,
+    NgxSpinnerModule
   ],
   providers: [FuzzyApiService, MessageService, CustomToastService],
   bootstrap: [AppComponent]

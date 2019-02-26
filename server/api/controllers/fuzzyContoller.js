@@ -1,4 +1,8 @@
-const request = require("request-promise");
+//const request = require("request-promise");
+// const Thinker = require('thinker-fts');
+//const fingerprint = require('ngram-fingerprint')
+// const path = require('path');
+
 const daitchMokotoff = require('talisman/phonetics/daitch-mokotoff');
 const doubleMetaphone = require('talisman/phonetics/double-metaphone');
 const soundex = require('soundex');
@@ -10,14 +14,9 @@ const fuse = require('fuse.js');
 const jaroWinkler = require('jaro-winkler');
 
 const lunr = require('lunr');
-// const Thinker = require('thinker-fts');
-const fingerprint = require('ngram-fingerprint')
-
 const wuzzy = require('wuzzy');
 
-
 const _ = require("lodash");
-const path = require('path');
 
 // var exampleJSON = require('../../assets/example_subjects.json');
 var exampleJSON = require('../../assets/qa_names.json');
@@ -26,10 +25,10 @@ exports.fuzzy_default = async (req, res, next) => {
   try {
     console.log(`------------------------FUZZY_DEFAULT------------------------`);
     const searchStr = req.body.searchStr;
-    const name = req.body.name;
+    let name = req.body.name;
     const isCustomJson = req.body.isCustomJson
     const ngramSize = req.body.ngramSize;
-    const thresholdValue = req.body.thresholdValue;
+    let thresholdValue = isNaN(req.body.thresholdValue) ? 0 : +req.body.thresholdValue;
 
     if (isCustomJson === "true") {
       examples = req.body.examples;
@@ -37,7 +36,7 @@ exports.fuzzy_default = async (req, res, next) => {
       examples = exampleJSON;
     }
 
-    console.log(`Selected : ${name}`);
+    console.log(`Selected : ${name} >> thresholdValue : ${thresholdValue}`);
     /**************************** PHONETIC ************************************/
     ///////////////////////////Daitch Mokotoff///////////////////////////
     if (name === 'daitchmokotoff') {
@@ -54,25 +53,14 @@ exports.fuzzy_default = async (req, res, next) => {
         });
       });
 
-      result = _.orderBy(result, 'score', ['desc']);
-
       if (searchStr) {
         let score = daitchMokotoff(searchStr);
-        // result.unshift({
-        //   'choice': searchStr,
-        //   'index': 0,
-        //   'score': score
-        // });
 
         result.unshift(result.splice(result.findIndex((item) => {
           return _.isEqual(item.score.sort(), score.sort());
         }), 1)[0]);
-      }
 
-      // Split into groups the length of size
-      const threshold_results = _.chunk(result, +thresholdValue);
-      if (threshold_results) {
-        result = threshold_results[0];
+        result = filterandSortResult(result, thresholdValue);
       }
 
       res.status(200).json({
@@ -96,25 +84,14 @@ exports.fuzzy_default = async (req, res, next) => {
         });
       });
 
-      result = _.orderBy(result, 'score', ['desc']);
-
       if (searchStr) {
         let score = doubleMetaphone(searchStr);
-        // result.unshift({
-        //   'choice': searchStr,
-        //   'index': 0,
-        //   'score': score
-        // });
 
         result.unshift(result.splice(result.findIndex((item) => {
           return _.isEqual(item.score.sort(), score.sort());
         }), 1)[0]);
 
-        // Split into groups the length of size
-        const threshold_results = _.chunk(result, +thresholdValue);
-        if (threshold_results) {
-          result = threshold_results[0];
-        }
+        result = filterandSortResult(result, thresholdValue);
       }
 
       res.status(200).json({
@@ -138,23 +115,12 @@ exports.fuzzy_default = async (req, res, next) => {
         });
       });
 
-      result = _.orderBy(result, 'score', ['desc']);
-
       if (searchStr) {
         let score = soundex(searchStr);
-        // result.unshift({
-        //   'choice': searchStr,
-        //   'index': 0,
-        //   'score': score
-        // });
 
         result.unshift(result.splice(result.findIndex(item => item.score === score), 1)[0]);
 
-        // Split into groups the length of size
-        const threshold_results = _.chunk(result, +thresholdValue);
-        if (threshold_results) {
-          result = threshold_results[0];
-        }
+        result = filterandSortResult(result, thresholdValue);
       }
 
       res.status(200).json({
@@ -180,24 +146,13 @@ exports.fuzzy_default = async (req, res, next) => {
         });
       });
 
-      result = _.orderBy(result, 'score', ['desc']);
-
       if (searchStr) {
         let score = metaphone.process(searchStr);
-        // result.unshift({
-        //   'choice': searchStr,
-        //   'index': 0,
-        //   'score': score
-        // });
 
         result.unshift(result.splice(result.findIndex(item => item.score === score), 1)[0]);
-
-        // Split into groups the length of size
-        const threshold_results = _.chunk(result, +thresholdValue);
-        if (threshold_results) {
-          result = threshold_results[0];
-        }
       }
+
+      result = filterandSortResult(result, thresholdValue);
 
       res.status(200).json({
         success: true,
@@ -222,24 +177,13 @@ exports.fuzzy_default = async (req, res, next) => {
         });
       });
 
-      result = _.orderBy(result, 'score', ['desc']);
-
       if (searchStr) {
         let score = metaphone.process(searchStr);
-        // result.unshift({
-        //   'choice': searchStr,
-        //   'index': 0,
-        //   'score': score
-        // });
 
         result.unshift(result.splice(result.findIndex(item => item.score === score), 1)[0]);
-
-        // Split into groups the length of size
-        const threshold_results = _.chunk(result, +thresholdValue);
-        if (threshold_results) {
-          result = threshold_results[0];
-        }
       }
+
+      result = filterandSortResult(result, thresholdValue);
 
       res.status(200).json({
         success: true,
@@ -263,14 +207,9 @@ exports.fuzzy_default = async (req, res, next) => {
           });
         });
 
-        result = _.orderBy(result, 'score', ['desc']);
-
-        // Split into groups the length of size
-        const threshold_results = _.chunk(result, +thresholdValue);
-        if (threshold_results) {
-          result = threshold_results[0];
-        }
+        result = filterandSortResult(result, thresholdValue);
       }
+
 
       res.status(200).json({
         success: true,
@@ -294,13 +233,7 @@ exports.fuzzy_default = async (req, res, next) => {
           });
         });
 
-        result = _.orderBy(result, 'score', ['desc']);
-
-        // Split into groups the length of size
-        const threshold_results = _.chunk(result, +thresholdValue);
-        if (threshold_results) {
-          result = threshold_results[0];
-        }
+        result = filterandSortResult(result, thresholdValue);
       }
 
       res.status(200).json({
@@ -340,13 +273,7 @@ exports.fuzzy_default = async (req, res, next) => {
         });
       });
 
-      curated_result = _.orderBy(curated_result, 'score', ['desc']);
-
-      // Split into groups the length of size
-      const threshold_results = _.chunk(curated_result, +thresholdValue);
-      if (threshold_results) {
-        curated_result = threshold_results[0];
-      }
+      curated_result = filterandSortResult(curated_result, thresholdValue);
 
       res.status(200).json({
         success: true,
@@ -368,13 +295,7 @@ exports.fuzzy_default = async (req, res, next) => {
           });
         });
 
-        result = _.orderBy(result, 'score', ['desc']);
-
-        // Split into groups the length of size
-        const threshold_results = _.chunk(result, +thresholdValue);
-        if (threshold_results) {
-          result = threshold_results[0];
-        }
+        result = filterandSortResult(result, thresholdValue);
       }
 
       res.status(200).json({
@@ -412,11 +333,7 @@ exports.fuzzy_default = async (req, res, next) => {
         });
       });
 
-      // Split into groups the length of size
-      const threshold_results = _.chunk(curated_result, +thresholdValue);
-      if (threshold_results) {
-        curated_result = threshold_results[0];
-      }
+      curated_result = filterandSortResult(curated_result, thresholdValue);
 
       res.status(200).json({
         success: true,
@@ -440,13 +357,7 @@ exports.fuzzy_default = async (req, res, next) => {
           });
         });
 
-        result = _.orderBy(result, 'score', ['desc']);
-
-        // Split into groups the length of size
-        const threshold_results = _.chunk(result, +thresholdValue);
-        if (threshold_results) {
-          result = threshold_results[0];
-        }
+        result = filterandSortResult(result, thresholdValue);
       }
 
       res.status(200).json({
@@ -457,6 +368,7 @@ exports.fuzzy_default = async (req, res, next) => {
       ///////////////////////////JARO WINKLER///////////////////////////
     } else {
       ///////////////////////////LEVENSHTEIN///////////////////////////
+      name = "levenshtein"
       let result = [];
 
       //Iterate over Array of examples
@@ -471,13 +383,7 @@ exports.fuzzy_default = async (req, res, next) => {
           });
         });
 
-        result = _.orderBy(result, 'score', ['desc']);
-
-        // Split into groups the length of size
-        const threshold_results = _.chunk(result, +thresholdValue);
-        if (threshold_results) {
-          result = threshold_results[0];
-        }
+        result = filterandSortResult(result, thresholdValue);
       }
 
       res.status(200).json({
@@ -506,7 +412,7 @@ exports.fuzzy_custom = async (req, res, next) => {
     const selectedAlgorithms = req.body.selectedAlgorithms;
     const isCustomJson = req.body.isCustomJson;
     const ngramSize = req.body.ngramSize;
-    const thresholdValue = req.body.thresholdValue;
+    let thresholdValue = isNaN(req.body.thresholdValue) ? 0 : +req.body.thresholdValue;
 
     if (isCustomJson === "true") {
       examples = req.body.examples;
@@ -654,14 +560,15 @@ exports.fuzzy_custom = async (req, res, next) => {
         results[index][`final_score`] = finalScore;
       }); // end of results.forEach
 
-      // Sorting the results by final score desc
-      results = _.orderBy(results, 'final_score', ['desc']);
+      //Filter results whose score is greater or equal to threshold Value
+      results = _.map(results, function (item) {
+        if (+item.final_score >= thresholdValue) return item;
+      });
+      // Remove undefines from the array
+      results = _.without(results, undefined);
+      //Sorting Score by descending
+      results = _.orderBy(results, 'score', ['desc']);
 
-      // Split into groups the length of size
-      const threshold_results = _.chunk(results, +thresholdValue);
-      if (threshold_results) {
-        results = threshold_results[0];
-      }
       //==============================FINAL SCORE==============================
       res.status(200).json({
         success: true,
@@ -683,3 +590,16 @@ exports.fuzzy_custom = async (req, res, next) => {
     });
   }
 };
+
+function filterandSortResult(result, thresholdValue) {
+  //Filter results whose score is greater or equal to threshold Value
+  result = _.map(result, function (item) {
+    if (+item.score >= thresholdValue) return item;
+  });
+  // Remove undefines from the array
+  result = _.without(result, undefined);
+  //Sorting Score by descending
+  result = _.orderBy(result, 'score', ['desc']);
+
+  return result;
+}
