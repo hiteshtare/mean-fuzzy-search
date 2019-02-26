@@ -567,7 +567,7 @@ exports.fuzzy_custom = async (req, res, next) => {
       // Remove undefines from the array
       results = _.without(results, undefined);
       //Sorting Score by descending
-      results = _.orderBy(results, 'score', ['desc']);
+      results = _.orderBy(results, 'final_score', ['desc']);
 
       //==============================FINAL SCORE==============================
       res.status(200).json({

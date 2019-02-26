@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FuzzyApiService } from 'src/app/shared/services/fuzzy-api.service';
 import { FormBuilder, FormArray, Validators, FormGroup } from '@angular/forms';
 import { CustomToastService } from 'src/app/shared/services/custom-toast.service';
+import { NgxSpinnerService } from 'ngx-spinner';
 
 @Component({
   selector: 'app-custom',
@@ -40,7 +41,8 @@ export class CustomComponent implements OnInit {
 
   selectedCustomJsonValue = 'false';
 
-  constructor(private fuzzyApiService: FuzzyApiService, private formBuilder: FormBuilder, private customToastService: CustomToastService) {
+  constructor(private fuzzyApiService: FuzzyApiService, private formBuilder: FormBuilder,
+    private customToastService: CustomToastService, private spinner: NgxSpinnerService) {
     this.sampleForm = this.formBuilder.group({
       searchAlgorithm: this.formBuilder.array([{}])
     });
@@ -71,6 +73,8 @@ export class CustomComponent implements OnInit {
   }
 
   loadCustomResults() {
+    this.spinner.show();
+
     // Default Value
     this.computedValue = typeof (this.computedValue) === 'undefined' ? [{ value: 'symlar', text: '1' }] : this.computedValue;
     const options = {
@@ -86,6 +90,7 @@ export class CustomComponent implements OnInit {
       if (data['success'] === true) {
         this.customToastService.toastMessage('success', 'Custom Search Complete', data['message']);
         this.results = data['payload'];
+        this.spinner.hide();
       }
     });
   }

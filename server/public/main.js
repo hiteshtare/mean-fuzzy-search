@@ -275,16 +275,19 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var src_app_shared_services_fuzzy_api_service__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! src/app/shared/services/fuzzy-api.service */ "./src/app/shared/services/fuzzy-api.service.ts");
 /* harmony import */ var _angular_forms__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @angular/forms */ "./node_modules/@angular/forms/fesm5/forms.js");
 /* harmony import */ var src_app_shared_services_custom_toast_service__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! src/app/shared/services/custom-toast.service */ "./src/app/shared/services/custom-toast.service.ts");
+/* harmony import */ var ngx_spinner__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ngx-spinner */ "./node_modules/ngx-spinner/fesm5/ngx-spinner.js");
+
 
 
 
 
 
 var CustomComponent = /** @class */ (function () {
-    function CustomComponent(fuzzyApiService, formBuilder, customToastService) {
+    function CustomComponent(fuzzyApiService, formBuilder, customToastService, spinner) {
         this.fuzzyApiService = fuzzyApiService;
         this.formBuilder = formBuilder;
         this.customToastService = customToastService;
+        this.spinner = spinner;
         this.txtSearch = '';
         this.txtNgramSize = '2';
         this.txtThresholdValue = '0';
@@ -337,6 +340,7 @@ var CustomComponent = /** @class */ (function () {
     });
     CustomComponent.prototype.loadCustomResults = function () {
         var _this = this;
+        this.spinner.show();
         // Default Value
         this.computedValue = typeof (this.computedValue) === 'undefined' ? [{ value: 'symlar', text: '1' }] : this.computedValue;
         var options = {
@@ -351,6 +355,7 @@ var CustomComponent = /** @class */ (function () {
             if (data['success'] === true) {
                 _this.customToastService.toastMessage('success', 'Custom Search Complete', data['message']);
                 _this.results = data['payload'];
+                _this.spinner.hide();
             }
         });
     };
@@ -448,7 +453,8 @@ var CustomComponent = /** @class */ (function () {
             template: __webpack_require__(/*! ./custom.component.html */ "./src/app/components/custom/custom.component.html"),
             styles: [__webpack_require__(/*! ./custom.component.css */ "./src/app/components/custom/custom.component.css")]
         }),
-        tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"]("design:paramtypes", [src_app_shared_services_fuzzy_api_service__WEBPACK_IMPORTED_MODULE_2__["FuzzyApiService"], _angular_forms__WEBPACK_IMPORTED_MODULE_3__["FormBuilder"], src_app_shared_services_custom_toast_service__WEBPACK_IMPORTED_MODULE_4__["CustomToastService"]])
+        tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"]("design:paramtypes", [src_app_shared_services_fuzzy_api_service__WEBPACK_IMPORTED_MODULE_2__["FuzzyApiService"], _angular_forms__WEBPACK_IMPORTED_MODULE_3__["FormBuilder"],
+            src_app_shared_services_custom_toast_service__WEBPACK_IMPORTED_MODULE_4__["CustomToastService"], ngx_spinner__WEBPACK_IMPORTED_MODULE_5__["NgxSpinnerService"]])
     ], CustomComponent);
     return CustomComponent;
 }()); // End of CustomComponent class
